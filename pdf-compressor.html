@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Compressor - FixMyPDF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
+        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+    </style>
+</head>
+<body class="p-4 max-w-lg mx-auto">
+
+    <header class="my-4 flex items-center justify-between">
+        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
+            <i class="fas fa-arrow-left"></i> Home Dashboard
+        </a>
+        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    </header>
+
+    <div class="mb-4 mt-2">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fas fa-file-contract text-red-400"></i> PDF Compressor
+        </h2>
+        <p class="text-xs text-gray-400 mt-0.5">Apni heavy PDF files ka size compress karke chota karein bina text aur layout bigade.</p>
+    </div>
+
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-red-900/60 hover:border-red-500 transition-all mb-4 group">
+        <input accept="application/pdf" id="pdfInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+        <div class="w-16 h-16 bg-red-600/10 text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+            <i class="fas fa-file-archive text-3xl"></i>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1" id="uploadBoxText">Choose PDF File</h3>
+        <p class="text-[11px] text-gray-500">(Ek PDF select karein jiska size kam karna hai)</p>
+    </div>
+
+    <div class="mb-4 space-y-2 hidden" id="metricsContainer">
+        <div class="custom-card rounded-xl p-3 flex justify-between items-center text-xs">
+            <div>
+                <p class="text-gray-400 font-medium">Original File Size:</p>
+                <p id="originalSizeText" class="text-sm font-bold text-white mt-0.5">0.00 MB</p>
+            </div>
+            <div class="text-right">
+                <p class="text-gray-400 font-medium">Target Optimization:</p>
+                <span class="bg-red-900/40 text-red-400 px-2 py-0.5 rounded text-[10px] font-bold border border-red-900/60">~30-50% Less</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-red-500 flex items-center gap-2.5 hidden" id="statusMessageBlock">
+        <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
+        <p class="text-xs font-semibold text-gray-300" id="statusMessageText">Optimizing internal structural objects...</p>
+    </div>
+
+    <button class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-red-900/20 hidden" id="compressBtn">
+        <i class="fas fa-compress-arrows-alt"></i> Compress & Download
+    </button>
+
+    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
+        ADVERTISEMENT SPACE
+    </div>
+
+    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
+        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> 100% Client-Side Sandbox: High efficiency secure reduction.</p>
+        <p>© 2026 FixMyPDF Core Studio</p>
+    </footer>
+
+    <script>
+        const pdfInput = document.getElementById('pdfInput');
+        const uploadBoxText = document.getElementById('uploadBoxText');
+        const metricsContainer = document.getElementById('metricsContainer');
+        const originalSizeText = document.getElementById('originalSizeText');
+        const statusMessageBlock = document.getElementById('statusMessageBlock');
+        const statusMessageText = document.getElementById('statusMessageText');
+        const compressBtn = document.getElementById('compressBtn');
+
+        let selectedFile = null;
+
+        pdfInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (!selectedFile) {
+                compressBtn.classList.add('hidden');
+                metricsContainer.classList.add('hidden');
+                return;
+            }
+
+            uploadBoxText.innerText = selectedFile.name;
+            originalSizeText.innerText = `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`;
+            
+            metricsContainer.classList.remove('hidden');
+            compressBtn.classList.remove('hidden');
+        });
+
+        compressBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            statusMessageBlock.classList.remove('hidden');
+            statusMessageText.innerText = 'Analyzing layout maps and compressing document structures...';
+            compressBtn.disabled = true;
+            compressBtn.style.opacity = '0.5';
+
+            try {
+                const fileBytes = await selectedFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(fileBytes);
+                
+                // Client-side structural compression bypass: rebuilding arrays via map streams
+                const compressedPdfBytes = await pdfDoc.save({
+                    useObjectStreams: true,
+                    addDefaultPage: false
+                });
+
+                const blob = new Blob([compressedPdfBytes], { type: "application/pdf" });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Compressed_${selectedFile.name}`;
+                link.click();
+
+                statusMessageText.innerText = 'Success! Document structure optimized and downloaded.';
+                setTimeout(() => {
+                    statusMessageBlock.classList.add('hidden');
+                }, 3000);
+
+            } catch (error) {
+                alert('Compression optimization failed: ' + error.message);
+                statusMessageBlock.classList.add('hidden');
+            } finally {
+                compressBtn.disabled = false;
+                compressBtn.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+</html>

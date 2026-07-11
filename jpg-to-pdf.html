@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free JPG to PDF Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #0f172a; padding: 20px; color: #f8fafc; }
+        .tool-container { max-width: 600px; margin: 30px auto; padding: 25px; background: #1e293b; border-radius: 12px; border: 1px solid #334155; text-align: center; }
+        h2 { color: #38bdf8; margin-bottom: 8px; font-size: 22px; }
+        p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+        .upload-box { border: 2px dashed #38bdf8; padding: 30px 15px; border-radius: 8px; background: #0f172a; cursor: pointer; position: relative; margin-bottom: 20px; }
+        .upload-box input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
+        .upload-icon { font-size: 35px; margin-bottom: 8px; display: block; }
+        .upload-text { font-size: 14px; color: #cbd5e1; }
+        .status-msg { margin: 15px 0; font-size: 14px; font-weight: bold; color: #10b981; display: none; }
+        .btn-main { background: #38bdf8; color: #0f172a; padding: 12px 24px; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; display: none; }
+        .preview-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 15px; }
+        .preview-item { position: relative; border-radius: 4px; overflow: hidden; border: 1px solid #334155; aspect-ratio: 1; }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+<div class="tool-container">
+    <h2>JPG to PDF Converter</h2>
+    <p>Apni JPG images ko bina quality khoye PDF document me badlein.</p>
+    <div class="upload-box">
+        <span class="upload-icon">🖼️</span>
+        <span class="upload-text" id="fileNameText">Choose JPG Images</span>
+        <input accept="image/jpeg, image/jpg" id="imageInput" multiple type="file"/>
+    </div>
+    <div class="preview-container" id="previewGrid"></div>
+    <div class="status-msg" id="statusMessage">Processing...</div>
+    <button class="btn-main" id="downloadBtn">Download PDF</button>
+</div>
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const fileNameText = document.getElementById('fileNameText');
+    const statusMessage = document.getElementById('statusMessage');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const previewGrid = document.getElementById('previewGrid');
+    let selectedFiles = [];
+
+    imageInput.addEventListener('change', (e) => {
+        selectedFiles = Array.from(e.target.files);
+        if (selectedFiles.length === 0) return;
+        fileNameText.innerText = `${selectedFiles.length} JPG Selected`;
+        previewGrid.innerHTML = '';
+        downloadBtn.style.display = 'block';
+        selectedFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                item.appendChild(img);
+                previewGrid.appendChild(item);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+
+    downloadBtn.addEventListener('click', async () => {
+        if (selectedFiles.length === 0) return;
+        statusMessage.style.display = 'block';
+        statusMessage.innerText = 'Generating PDF... Please wait.';
+        downloadBtn.style.display = 'none';
+        try {
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            for (const file of selectedFiles) {
+                const fileBytes = await file.arrayBuffer();
+                const image = await pdfDoc.embedJpg(fileBytes);
+                const page = pdfDoc.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+            }
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "FixMyPDF_JPG_Converted.pdf";
+            link.click();
+            statusMessage.innerText = 'Success! Downloaded.';
+            downloadBtn.style.display = 'block';
+        } catch (error) {
+            alert('Error: ' + error.message);
+            statusMessage.style.display = 'none';
+            downloadBtn.style.display = 'block';
+        }
+    });
+</script>
+</body>
+</html>

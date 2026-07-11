@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer - FixMyPDF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
+        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+    </style>
+</head>
+<body class="p-4 max-w-lg mx-auto">
+
+    <header class="my-4 flex items-center justify-between">
+        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
+            <i class="fas fa-arrow-left"></i> Home Dashboard
+        </a>
+        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    </header>
+
+    <div class="mb-4 mt-2">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fas fa-expand-arrows-alt text-purple-400"></i> Image Resizer
+        </h2>
+        <p class="text-xs text-gray-400 mt-0.5">Apni photos ki Width aur Height ko pixels mein badlein. Perfect dimensions paane ke liye best tool.</p>
+    </div>
+
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-purple-900/60 hover:border-purple-500 transition-all mb-4 group">
+        <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+        <div class="w-16 h-16 bg-purple-600/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+            <i class="fas fa-arrows-alt text-3xl"></i>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1" id="uploadBoxText">Choose Image File</h3>
+        <p class="text-[11px] text-gray-500">(Supports JPG, JPEG, PNG)</p>
+    </div>
+
+    <div class="mb-4 space-y-3 hidden" id="controlsContainer">
+        
+        <div class="custom-card rounded-xl p-3 text-center text-xs">
+            <p class="text-gray-400 font-medium">Original Dimensions:</p>
+            <p id="originalDims" class="text-sm font-bold text-white mt-0.5">0 x 0 px</p>
+        </div>
+
+        <div class="custom-card rounded-xl p-4 space-y-3">
+            <div class="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                    <label class="block text-gray-400 font-medium mb-1">Width (px):</label>
+                    <input type="number" id="widthInput" class="w-full bg-[#0d0f14] border border-gray-700 rounded-lg p-2 text-white font-bold text-sm focus:border-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-gray-400 font-medium mb-1">Height (px):</label>
+                    <input type="number" id="heightInput" class="w-full bg-[#0d0f14] border border-gray-700 rounded-lg p-2 text-white font-bold text-sm focus:border-purple-500 focus:outline-none">
+                </div>
+            </div>
+
+            <label class="flex items-center gap-2 text-xs font-medium text-gray-300 cursor-pointer select-none">
+                <input type="checkbox" id="aspectRatioCheck" checked class="w-4 h-4 accent-purple-500 rounded bg-gray-800 border-gray-700">
+                <span>Lock Aspect Ratio (Ratio barabar rakhein)</span>
+            </label>
+        </div>
+    </div>
+
+    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-purple-500 flex items-center gap-2.5 hidden" id="statusBlock">
+        <span class="w-2 h-2 bg-purple-500 rounded-full animate-ping"></span>
+        <p class="text-xs font-semibold text-gray-300">Recalculating canvas matrix...</p>
+    </div>
+
+    <button class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-purple-900/20 hidden" id="downloadBtn">
+        <i class="fas fa-download"></i> Resize & Download Image
+    </button>
+
+    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
+        ADVERTISEMENT SPACE
+    </div>
+
+    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
+        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> 100% Secure Sandbox: All resizes are done locally.</p>
+        <p>© 2026 FixMyPDF Core Studio</p>
+    </footer>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const uploadBoxText = document.getElementById('uploadBoxText');
+        const controlsContainer = document.getElementById('controlsContainer');
+        const originalDims = document.getElementById('originalDims');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const aspectRatioCheck = document.getElementById('aspectRatioCheck');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusBlock = document.getElementById('statusBlock');
+
+        let sourceImage = null;
+        let originalRatio = 1;
+        let originalFileName = "resized_image";
+        let fileType = "image/jpeg";
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+            fileType = file.type;
+
+            uploadBoxText.innerText = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                sourceImage = new Image();
+                sourceImage.onload = function() {
+                    originalDims.innerText = `${sourceImage.width} x ${sourceImage.height} px`;
+                    widthInput.value = sourceImage.width;
+                    heightInput.value = sourceImage.height;
+                    originalRatio = sourceImage.width / sourceImage.height;
+
+                    controlsContainer.classList.remove('hidden');
+                    downloadBtn.classList.remove('hidden');
+                };
+                sourceImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Aspect Ratio Event Logic
+        widthInput.addEventListener('input', () => {
+            if (aspectRatioCheck.checked && sourceImage) {
+                heightInput.value = Math.round(widthInput.value / originalRatio);
+            }
+        });
+
+        heightInput.addEventListener('input', () => {
+            if (aspectRatioCheck.checked && sourceImage) {
+                widthInput.value = Math.round(heightInput.value * originalRatio);
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (!sourceImage) return;
+
+            statusBlock.classList.remove('hidden');
+            downloadBtn.disabled = true;
+            downloadBtn.style.opacity = '0.5';
+
+            setTimeout(() => {
+                const canvas = document.createElement('canvas');
+                canvas.width = parseInt(widthInput.value) || sourceImage.width;
+                canvas.height = parseInt(heightInput.value) || sourceImage.height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+
+                const dataUrl = canvas.toDataURL(fileType);
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                
+                const ext = fileType === "image/png" ? "png" : "jpg";
+                link.download = `${originalFileName}_resized.${ext}`;
+                link.click();
+
+                statusBlock.classList.add('hidden');
+                downloadBtn.disabled = false;
+                downloadBtn.style.opacity = '1';
+            }, 400);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Merger - FixMyPDF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF-Lib library for local client-side merging -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <style>
+        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
+        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+    </style>
+</head>
+<body class="p-4 max-w-lg mx-auto">
+
+    <!-- Header / Nav Section -->
+    <header class="my-4 flex items-center justify-between">
+        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
+            <i class="fas fa-arrow-left"></i> Home Dashboard
+        </a>
+        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    </header>
+
+    <!-- Tool Title -->
+    <div class="mb-4 mt-2">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fas fa-file-pdf text-amber-500"></i> PDF Merger Tool
+        </h2>
+        <p class="text-xs text-gray-400 mt-0.5">Multiple PDF files ko ek sath jodein ek single document mein, bina kisi quality loss ke.</p>
+    </div>
+
+    <!-- MAIN UPLOAD ZONE CARD -->
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-amber-900/60 hover:border-amber-500 transition-all mb-4 group">
+        <input accept="application/pdf" id="pdfInput" multiple type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+        <div class="w-16 h-16 bg-amber-600/10 text-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+            <i class="fas fa-folder-plus text-3xl"></i>
+        </div>
+        <h3 class="text-sm font-bold text-white mb-1" id="uploadBoxText">Choose PDF Files</h3>
+        <p class="text-[11px] text-gray-500">(Multiple PDFs select karein)</p>
+    </div>
+
+    <!-- SELECTED FILES LIST AREA -->
+    <div class="mb-4 space-y-2 hidden" id="filesListContainer">
+        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Selected Files Queue:</h4>
+        <div id="pdfQueue" class="space-y-1.5"></div>
+    </div>
+
+    <!-- STATUS MESSAGE -->
+    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-blue-500 flex items-center gap-2.5 hidden" id="statusMessageBlock">
+        <span class="w-2 h-2 bg-blue-500 rounded-full animate-ping"></span>
+        <p class="text-xs font-semibold text-gray-300" id="statusMessageText">Merging your PDF documents...</p>
+    </div>
+
+    <!-- MERGE & DOWNLOAD BUTTON -->
+    <button class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-amber-900/20 hidden" id="mergeBtn">
+        <i class="fas fa-object-group"></i> Merge & Download PDF
+    </button>
+
+    <!-- IN-FEED ADVERTISEMENT SPACE -->
+    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
+        ADVERTISEMENT SPACE
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
+        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> 100% Secure Client Sandbox: Files never leave your device.</p>
+        <p>© 2026 FixMyPDF Core Studio</p>
+    </footer>
+
+    <!-- CORE MERGER LOGIC -->
+    <script>
+        const pdfInput = document.getElementById('pdfInput');
+        const uploadBoxText = document.getElementById('uploadBoxText');
+        const filesListContainer = document.getElementById('filesListContainer');
+        const pdfQueue = document.getElementById('pdfQueue');
+        const statusMessageBlock = document.getElementById('statusMessageBlock');
+        const statusMessageText = document.getElementById('statusMessageText');
+        const mergeBtn = document.getElementById('mergeBtn');
+        
+        let selectedPdfFiles = [];
+
+        pdfInput.addEventListener('change', (e) => {
+            selectedPdfFiles = Array.from(e.target.files);
+            
+            if (selectedPdfFiles.length < 2) {
+                alert('Bhai, kam se kam 2 PDF files select karo merge karne ke liye!');
+                mergeBtn.classList.add('hidden');
+                filesListContainer.classList.add('hidden');
+                uploadBoxText.innerText = "Choose PDF Files";
+                return;
+            }
+
+            uploadBoxText.innerText = `${selectedPdfFiles.length} PDFs Loaded`;
+            pdfQueue.innerHTML = '';
+            filesListContainer.classList.remove('hidden');
+            mergeBtn.classList.remove('hidden');
+
+            // Render list of selected files
+            selectedPdfFiles.forEach((file, index) => {
+                const row = document.createElement('div');
+                row.className = 'custom-card rounded-lg p-2.5 flex items-center justify-between text-xs border border-gray-800 bg-[#14171f]';
+                row.innerHTML = `
+                    <div class="flex items-center gap-2 truncate pr-4">
+                        <span class="text-amber-500 font-bold">${index + 1}.</span>
+                        <span class="text-gray-300 truncate">${file.name}</span>
+                    </div>
+                    <span class="text-[10px] text-gray-500 font-medium whitespace-nowrap">${(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+                `;
+                pdfQueue.appendChild(row);
+            });
+        });
+
+        mergeBtn.addEventListener('click', async () => {
+            if (selectedPdfFiles.length < 2) return;
+
+            statusMessageBlock.classList.remove('hidden');
+            statusMessageText.innerText = 'Extracting pages and compiling master layout... Please wait.';
+            mergeBtn.disabled = true;
+            mergeBtn.style.opacity = '0.5';
+
+            try {
+                // Create a completely new empty PDF document
+                const mergedPdf = await PDFLib.PDFDocument.create();
+
+                // Loop through all selected files and copy pages
+                for (const file of selectedPdfFiles) {
+                    const fileBytes = await file.arrayBuffer();
+                    const srcDoc = await PDFLib.PDFDocument.load(fileBytes);
+                    const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+                    copiedPages.forEach((page) => mergedPdf.addPage(page));
+                }
+
+                // Save and trigger automated local download
+                const mergedPdfBytes = await mergedPdf.save();
+                const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Merged_Document_${Date.now()}.pdf`;
+                link.click();
+
+                statusMessageText.innerText = 'Makkhan! Your PDFs are merged successfully.';
+                setTimeout(() => {
+                    statusMessageBlock.classList.add('hidden');
+                }, 3000);
+
+            } catch (error) {
+                alert('Error merging PDFs: ' + error.message);
+                statusMessageBlock.classList.add('hidden');
+            } finally {
+                mergeBtn.disabled = false;
+                mergeBtn.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+</html>
