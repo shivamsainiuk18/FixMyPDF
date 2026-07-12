@@ -5,114 +5,336 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FixMyPDF Tools - Fast & Private</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Base Dark Mode */
-        body {
-            background-color: #0d0f14;
-            color: white;
-            transition: background-color 0.3s, color 0.3s;
+        /* CSS Variables for seamless light/dark theme mapping */
+        :root {
+            --bg-main: #0d0f14;
+            --bg-card: #161920;
+            --bg-card-grad: linear-gradient(145deg, #161920, #1b1f2a);
+            --border-color: #232936;
+            --text-main: #e2e8f0;
+            --text-title: #ffffff;
+            --bg-accordion-content: #0f111a;
+            --bg-badge: #1a202c;
         }
 
-        /* Light Mode Classes */
+        /* Light Mode Color Overrides */
         body.light-mode {
-            background-color: #ffffff;
-            color: #1f2937;
+            --bg-main: #f3f4f6;
+            --bg-card: #ffffff;
+            --bg-card-grad: linear-gradient(145deg, #ffffff, #f9fafb);
+            --border-color: #e5e7eb;
+            --text-main: #374151;
+            --text-title: #111827;
+            --bg-accordion-content: #f9fafb;
+            --bg-badge: #e5e7eb;
         }
 
-        .custom-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            transition: background 0.3s;
-        }
-
-        body.light-mode .custom-card {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-        }
+        /* Applying the variables smoothly */
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.2s, color 0.2s; }
+        .custom-card { background: var(--bg-card-grad) !important; border: 1px solid var(--border-color) !important; transition: all 0.2s; }
+        .dynamic-bg-card { background-color: var(--bg-card) !important; border-color: var(--border-color) !important; transition: all 0.2s; }
+        .dynamic-text-title { color: var(--text-title) !important; }
+        .dynamic-accordion-bg { background-color: var(--bg-accordion-content) !important; }
+        .dynamic-badge-bg { background-color: var(--bg-badge) !important; transition: all 0.2s; }
 
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .active .accordion-content { max-height: 500px; }
+        .active .accordion-content { max-height: 500px; } 
         .active .accordion-icon { transform: rotate(180deg); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
     <!-- Header Section -->
-    <header class="my-6 flex justify-between items-center">
-        <div>
-            <p class="text-xs text-blue-400 font-bold uppercase tracking-wider">ShivNeh Labs</p>
-            <h1 class="text-2xl font-bold text-white transition-colors duration-300" id="brand-text">FixMyPDF</h1>
+    <header class="my-6 flex justify-between items-center dynamic-bg-card p-4 rounded-2xl border">
+        <!-- Left: Brand Hierarchy -->
+        <div class="text-left">
+            <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-0.5">ShivNeh Labs</span>
+            <h1 class="text-2xl font-bold dynamic-text-title tracking-wide leading-none">FixMy<span class="text-blue-500">PDF</span></h1>
         </div>
-        <button id="theme-toggle" class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
-            Light ☀️
+        
+        <!-- Right: Sleek Pill-Shaped Theme Toggle -->
+        <button id="themeToggle" class="px-4 py-1.5 rounded-full border border-gray-700 bg-transparent text-gray-400 text-xs font-semibold flex items-center gap-1.5 hover:border-blue-500 transition-all">
+            <span id="themeIcon">☀️</span> <span id="themeText">Light</span>
         </button>
     </header>
 
-    <!-- Top Banners -->
-    <div class="grid grid-cols-3 gap-2 mb-6">
-        <div class="bg-gray-800 p-2 rounded text-center text-[10px] text-blue-400">🚀 Lightning Fast</div>
-        <div class="bg-gray-800 p-2 rounded text-center text-[10px] text-yellow-500">🔒 100% Private</div>
-        <div class="bg-gray-800 p-2 rounded text-center text-[10px] text-red-400">🔥 No Limits</div>
+    <!-- Sub-Header Trust Badges -->
+    <div class="flex justify-center gap-2 mb-6 flex-wrap text-[10px] font-semibold">
+        <span class="dynamic-badge-bg text-blue-500 px-3 py-1 rounded-full border border-blue-400/20"><i class="fas fa-rocket mr-1"></i> Lightning Fast</span>
+        <span class="dynamic-badge-bg text-yellow-600 px-3 py-1 rounded-full border border-yellow-500/20"><i class="fas fa-lock mr-1"></i> 100% Private Engine</span>
+        <span class="dynamic-badge-bg text-red-500 px-3 py-1 rounded-full border border-red-400/20"><i class="fas fa-fire mr-1"></i> No File Limits</span>
     </div>
 
-    <!-- Active Tool Banner -->
-    <div class="bg-gray-900 border-l-4 border-green-500 p-4 mb-6 rounded flex items-center">
-        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
-        <p class="text-sm">Active Tool: Images to PDF Converter</p>
+    <!-- TOP ADVERTISEMENT SPACE -->
+    <div class="w-full dynamic-bg-card border border-dashed text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
+        ADVERTISEMENT SPACE (TOP BANNER)
     </div>
 
-    <!-- Main Tool Box -->
-    <div class="custom-card p-8 rounded-2xl text-center border border-gray-700">
-        <svg class="mx-auto w-12 h-12 mb-4 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-        <h2 class="text-xl font-bold mb-2">Click Here to Choose Images</h2>
-        <p class="text-xs text-gray-400 opacity-80">(Aap ek sath kai photos select kar sakte hain)</p>
+    <!-- Active Tool Status Card -->
+    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-green-500 flex items-center gap-3">
+        <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+        <p class="text-sm font-semibold">Active Tool: Images to PDF Converter</p>
     </div>
 
-    <!-- Convert Button -->
-    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl mt-6 transition-all shadow-lg flex justify-center items-center gap-2">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
-        Convert to PDF
-    </button>
+    <!-- MAIN UPLOAD ZONE CARD -->
+    <a href="jpg-to-pdf.html" class="block custom-card rounded-2xl p-8 text-center border-2 border-dashed border-blue-900/60 hover:border-blue-500 transition-all mb-4 group">
+        <div class="w-16 h-16 bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+            <i class="far fa-images text-3xl flex items-center justify-center h-full"></i>
+        </div>
+        <h3 class="text-lg font-bold dynamic-text-title mb-1">Click Here to Choose Images</h3>
+        <p class="text-xs text-gray-400">(Aap ek sath kai photos select kar sakte hain)</p>
+    </a>
 
-    <!-- Accordion Section -->
-    <div class="mt-8 border-t border-gray-800 pt-6">
-        <div class="accordion-item mb-4 cursor-pointer" onclick="this.classList.toggle('active')">
-            <div class="flex justify-between items-center font-bold py-2">
-                <span>PDF Tools</span>
-                <span class="accordion-icon transition-transform">▼</span>
+    <!-- IN-FEED ADVERTISEMENT SPACE -->
+    <div class="w-full dynamic-bg-card border border-dashed text-center py-3 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
+        IN-FEED ADVERTISEMENT SPACE
+    </div>
+
+    <!-- CONVERT BUTTON -->
+    <a href="jpg-to-pdf.html" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-blue-900/20">
+        <i class="fas fa-bolt"></i> Convert to PDF
+    </a>
+
+    <!-- TOOLS ACCORDION AREA -->
+    <div class="space-y-3 mb-6">
+        
+        <!-- Accordion 1: PDF Tools (Active) -->
+        <div class="custom-card rounded-xl overflow-hidden active border border-blue-500">
+            <div onclick="toggleAccordion(this)" class="p-4 flex justify-between items-center dynamic-bg-card border-b cursor-pointer">
+                <div class="flex items-center gap-2 font-bold dynamic-text-title text-sm">
+                    <i class="far fa-file-alt text-blue-400"></i> PDF Tools
+                </div>
+                <i class="fas fa-chevron-down text-xs text-blue-400 accordion-icon transition-transform duration-300"></i>
             </div>
-            <div class="accordion-content text-sm text-gray-400">
-                <div class="py-2">Image Compressor</div>
-                <div class="py-2">Image Resizer</div>
+            <div class="accordion-content dynamic-accordion-bg">
+                <div class="p-3 grid grid-cols-2 gap-3">
+                    <!-- Tool 1: JPG to PDF -->
+                    <a href="jpg-to-pdf.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-blue-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="far fa-image"></i>
+                        </div>
+                        <span class="text-xs font-semibold">JPG to PDF</span>
+                    </a>
+                    
+                    <!-- Tool 2: PNG to PDF -->
+                    <a href="jpg-to-pdf.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-green-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-file-image"></i>
+                        </div>
+                        <span class="text-xs font-semibold">PNG to PDF</span>
+                    </a>
+
+                    <!-- Tool 3: PDF Merger -->
+                    <a href="pdf-merger.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all col-span-2 mt-1">
+                        <div class="text-2xl text-amber-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <span class="text-xs font-semibold">PDF Merger</span>
+                    </a>
+
+                    <!-- Tool 4: PDF Compressor -->
+                    <a href="pdf-compressor.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all col-span-2 mt-1">
+                        <div class="text-2xl text-red-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <span class="text-xs font-semibold">PDF Compressor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 2: Image Tools -->
+        <div class="custom-card rounded-xl overflow-hidden">
+            <div onclick="toggleAccordion(this)" class="p-4 flex justify-between items-center dynamic-bg-card cursor-pointer">
+                <div class="flex items-center gap-2 font-bold text-sm">
+                    <i class="far fa-image text-green-400"></i> Image Tools
+                </div>
+                <i class="fas fa-chevron-down text-xs accordion-icon transition-transform duration-300"></i>
+            </div>
+            <div class="accordion-content dynamic-accordion-bg">
+                <div class="p-3 grid grid-cols-2 gap-3">
+                    <!-- Tool 1: Image Compressor -->
+                    <a href="image-compressor.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-teal-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-compress-alt"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Image Compressor</span>
+                    </a>
+                    
+                    <!-- Tool 2: Image Resizer -->
+                    <a href="image-resizer.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-purple-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Image Resizer</span>
+                    </a>
+
+                    <!-- Tool 3: Convert to WebP -->
+                    <a href="webp-converter.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all col-span-2 mt-1">
+                        <div class="text-2xl text-cyan-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-photo-video"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Convert to WebP</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 3: Utilities -->
+        <div class="custom-card rounded-xl overflow-hidden">
+            <div onclick="toggleAccordion(this)" class="p-4 flex justify-between items-center dynamic-bg-card cursor-pointer">
+                <div class="flex items-center gap-2 font-bold text-sm">
+                    <i class="fas fa-cog text-orange-400"></i> Utilities
+                </div>
+                <i class="fas fa-chevron-down text-xs accordion-icon transition-transform duration-300"></i>
+            </div>
+            <div class="accordion-content dynamic-accordion-bg">
+                <div class="p-3 grid grid-cols-2 gap-3">
+                    <!-- Tool 1: QR Code Generator -->
+                    <a href="qr-generator.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-yellow-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <span class="text-xs font-semibold">QR Generator</span>
+                    </a>
+                    
+                    <!-- Tool 2: Password Generator -->
+                    <a href="password-generator.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-pink-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Password Gen</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion 4: Text & SEO -->
+        <div class="custom-card rounded-xl overflow-hidden">
+            <div onclick="toggleAccordion(this)" class="p-4 flex justify-between items-center dynamic-bg-card cursor-pointer">
+                <div class="flex items-center gap-2 font-bold text-sm">
+                    <i class="fas fa-pen-nib text-indigo-400"></i> Text & SEO
+                </div>
+                <i class="fas fa-chevron-down text-xs accordion-icon transition-transform duration-300"></i>
+            </div>
+            <div class="accordion-content dynamic-accordion-bg">
+                <div class="p-3 grid grid-cols-2 gap-3">
+                    <!-- Tool 1: Word Counter -->
+                    <a href="word-counter.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-fuchsia-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Word Counter</span>
+                    </a>
+                    
+                    <!-- Tool 2: Lorem Ipsum -->
+                    <a href="lorem-generator.html" class="dynamic-bg-card border hover:border-blue-500 p-4 rounded-xl text-center block group transition-all">
+                        <div class="text-2xl text-lime-400 mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-align-left"></i>
+                        </div>
+                        <span class="text-xs font-semibold">Lorem Generator</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM ADVERTISEMENT SPACE -->
+    <div class="w-full dynamic-bg-card border border-dashed text-center py-6 rounded-xl mb-6 text-xs text-gray-500 font-bold tracking-wider">
+        LARGE ADVERTISEMENT SPACE (BOTTOM BANNER)
+    </div>
+
+    <!-- SAMPLE GALLERY -->
+    <div class="custom-card rounded-2xl p-4 mb-6">
+        <h4 class="text-center text-[11px] font-bold text-gray-400 tracking-wider mb-3">SAMPLE GALLERY (SUPPORTED FORMATS)</h4>
+        <div class="grid grid-cols-3 gap-2">
+            <div class="text-center dynamic-accordion-bg p-1.5 rounded-xl border border-gray-800/20">
+                <div class="h-16 rounded-lg mb-1 bg-gradient-to-br from-purple-600 to-indigo-600"></div>
+                <span class="text-[9px] text-gray-400 block truncate">Documents</span>
+            </div>
+            <div class="text-center dynamic-accordion-bg p-1.5 rounded-xl border border-gray-800/20">
+                <div class="h-16 rounded-lg mb-1 bg-gradient-to-br from-amber-600 to-red-600"></div>
+                <span class="text-[9px] text-gray-400 block truncate">Marksheet / Docs</span>
+            </div>
+            <div class="text-center dynamic-accordion-bg p-1.5 rounded-xl border border-gray-800/20">
+                <div class="h-16 rounded-lg mb-1 bg-gradient-to-br from-teal-600 to-emerald-600"></div>
+                <span class="text-[9px] text-gray-400 block truncate">Passport Photo</span>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-12 text-center text-gray-500 text-xs pb-4">
-        <p>&copy; 2026 ShivNeh Labs. All Rights Reserved.</p>
-        <p class="mt-2 text-green-500">Client-Side Security: No files are uploaded to any server.</p>
+    <!-- HOW TO CONVERT INFO BOX -->
+    <div class="custom-card rounded-2xl p-5 mb-6 text-xs leading-relaxed">
+        <h4 class="font-bold dynamic-text-title text-sm mb-3 flex items-center gap-1.5">💡 How to Convert JPG/PNG to PDF for Free?</h4>
+        <p class="text-gray-400 mb-3">FixMyPDF web app par photos ko PDF document banana behad aasan hai:</p>
+        <ol class="space-y-2 list-decimal list-inside text-gray-400">
+            <li>Desired conversion tool (JPG to PDF) select karein.</li>
+            <li>"Choose Images" par click karke un sabhi photos ko select karein jinhe aap jodna chahte hain.</li>
+            <li>Photos verify karke "Convert to PDF" button dabaein.</li>
+            <li>Download PDF par click karke apni file save karein.</li>
+        </ol>
+    </div>
+
+    <!-- STARTUP COMPANY FOOTER -->
+    <footer class="custom-card rounded-2xl p-5 text-center text-xs text-gray-400 space-y-4">
+        <div>
+            <h5 class="dynamic-text-title font-bold text-sm mb-1">About ShivNeh Labs</h5>
+            <p class="text-[11px] text-gray-400 leading-relaxed">We focus on building smart, fast, and 100% private web utilities to make your digital life easier.</p>
+        </div>
+        
+        <div class="border-t border-gray-800/40 pt-3">
+            <h5 class="dynamic-text-title font-bold text-[11px] uppercase tracking-wider mb-2">Our Products</h5>
+            <div class="flex justify-center gap-4 text-xs text-blue-500 font-semibold">
+                <a href="index.html" class="hover:underline">FixMyPDF Suite</a>
+                <span class="text-gray-500">|</span>
+                <span class="text-gray-400 cursor-not-allowed">More Apps Coming Soon</span>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800/40 pt-3 flex justify-center gap-4 text-[10px] text-gray-500">
+            <a href="#" class="hover:text-gray-400 transition-colors">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-gray-400 transition-colors">Terms of Service</a>
+            <span>•</span>
+            <a href="#" class="hover:text-gray-400 transition-colors">Contact Us</a>
+        </div>
+
+        <div class="text-[10px] text-gray-500 pt-1">
+            <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> Client-Side Security: No files are uploaded to any server.</p>
+            <p>© 2026 ShivNeh Labs. All Rights Reserved.</p>
+        </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- ACCORDION & BASE SCRIPTS -->
     <script>
-        const toggleBtn = document.getElementById('theme-toggle');
-        const body = document.body;
-        const brandText = document.getElementById('brand-text');
+        function toggleAccordion(headerElement) {
+            const card = headerElement.parentElement;
+            card.classList.toggle('active');
+        }
 
-        toggleBtn.addEventListener('click', () => {
-            body.classList.toggle('light-mode');
-            
-            const isLight = body.classList.contains('light-mode');
-            
-            // Update button text and icon
-            toggleBtn.innerHTML = isLight 
-                ? 'Dark 🌙' 
-                : 'Light ☀️';
-            
-            // Toggle brand text color
-            brandText.classList.toggle('text-white');
-            brandText.classList.toggle('text-gray-900');
-        });
-    </script>
-</body>
-                </html>
+        // Seamless Theme Toggle Logic
+        const toggleBtn = document.getElementById('themeToggle');
+        if(toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const body = document.body;
+                body.classList.toggle('light-mode');
                 
+                const text = document.getElementById('themeText');
+                const icon = document.getElementById('themeIcon');
+                
+                if(body.classList.contains('light-mode')) {
+                    text.innerText = 'Dark';
+                    icon.innerText = '🌙';
+                } else {
+                    text.innerText = 'Light';
+                    icon.innerText = '☀️';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
