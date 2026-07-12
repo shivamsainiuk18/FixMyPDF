@@ -17,15 +17,25 @@
 <body class="p-4 max-w-lg mx-auto">
 
     <!-- Header Section -->
-    <header class="text-center my-6">
-        <h1 class="text-3xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
-        <p class="text-xs text-gray-400 mt-1">FixMyPDF Tools</p>
-        <div class="flex justify-center gap-2 mt-3 flex-wrap text-[10px] font-semibold">
-            <span class="bg-[#1a202c] text-blue-400 px-3 py-1 rounded-full border border-blue-900/50"><i class="fas fa-rocket mr-1"></i> Lightning Fast</span>
-            <span class="bg-[#1a202c] text-yellow-400 px-3 py-1 rounded-full border border-yellow-900/50"><i class="fas fa-lock mr-1"></i> 100% Private Engine</span>
-            <span class="bg-[#1a202c] text-red-400 px-3 py-1 rounded-full border border-red-900/50"><i class="fas fa-fire mr-1"></i> No File Limits</span>
+    <header class="my-6 flex justify-between items-center bg-[#161920] p-4 rounded-2xl border border-[#232936]">
+        <!-- Left: Brand Hierarchy -->
+        <div class="text-left">
+            <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-0.5">ShivNeh Labs</span>
+            <h1 class="text-2xl font-bold text-white tracking-wide leading-none">FixMy<span class="text-blue-500">PDF</span></h1>
         </div>
+        
+        <!-- Right: Sleek Pill-Shaped Theme Toggle -->
+        <button id="themeToggle" class="px-4 py-1.5 rounded-full border border-gray-700 bg-transparent text-gray-200 text-xs font-semibold flex items-center gap-1.5 hover:border-blue-500 transition-all">
+            <span id="themeIcon">☀️</span> <span id="themeText">Light</span>
+        </button>
     </header>
+
+    <!-- Sub-Header Trust Badges -->
+    <div class="flex justify-center gap-2 mb-6 flex-wrap text-[10px] font-semibold">
+        <span class="bg-[#1a202c] text-blue-400 px-3 py-1 rounded-full border border-blue-900/50"><i class="fas fa-rocket mr-1"></i> Lightning Fast</span>
+        <span class="bg-[#1a202c] text-yellow-400 px-3 py-1 rounded-full border border-yellow-900/50"><i class="fas fa-lock mr-1"></i> 100% Private Engine</span>
+        <span class="bg-[#1a202c] text-red-400 px-3 py-1 rounded-full border border-red-900/50"><i class="fas fa-fire mr-1"></i> No File Limits</span>
+    </div>
 
     <!-- TOP ADVERTISEMENT SPACE -->
     <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
@@ -40,8 +50,8 @@
 
     <!-- MAIN UPLOAD ZONE CARD -->
     <a href="jpg-to-pdf.html" class="block custom-card rounded-2xl p-8 text-center border-2 border-dashed border-blue-900/60 hover:border-blue-500 transition-all mb-4 group">
-        <div class="w-16 h-16 bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-content-center mx-auto mb-4 group-hover:scale-105 transition-transform">
-            <i class="far fa-images text-3xl"></i>
+        <div class="w-16 h-16 bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+            <i class="far fa-images text-3xl flex items-center justify-center h-full"></i>
         </div>
         <h3 class="text-lg font-bold text-white mb-1">Click Here to Choose Images</h3>
         <p class="text-xs text-gray-400">(Aap ek sath kai photos select kar sakte hain)</p>
@@ -238,17 +248,57 @@
         </ol>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
-        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> Client-Side Security: No files are uploaded to any server.</p>
-        <p>© 2026 FixMyPDF Core Studio | Premium Architecture</p>
+    <!-- STARTUP COMPANY FOOTER -->
+    <footer class="custom-card rounded-2xl p-5 text-center border border-gray-900 text-xs text-gray-400 space-y-4">
+        <div>
+            <h5 class="text-white font-bold text-sm mb-1">About ShivNeh Labs</h5>
+            <p class="text-[11px] text-gray-400 leading-relaxed">We focus on building smart, fast, and 100% private web utilities to make your digital life easier.</p>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-3">
+            <h5 class="text-white font-bold text-[11px] uppercase tracking-wider mb-2">Our Products</h5>
+            <div class="flex justify-center gap-4 text-xs text-blue-400 font-semibold">
+                <a href="index.html" class="hover:underline">FixMyPDF Suite</a>
+                <span class="text-gray-600">|</span>
+                <span class="text-gray-500 cursor-not-allowed">More Apps Coming Soon</span>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800 pt-3 flex justify-center gap-4 text-[10px] text-gray-500">
+            <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+            <span>•</span>
+            <a href="#" class="hover:text-white transition-colors">Contact Us</a>
+        </div>
+
+        <div class="text-[10px] text-gray-600 pt-1">
+            <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> Client-Side Security: No files are uploaded to any server.</p>
+            <p>© 2026 ShivNeh Labs. All Rights Reserved.</p>
+        </div>
     </footer>
 
-    <!-- ACCORDION SCRIPT -->
+    <!-- ACCORDION & BASE SCRIPTS -->
     <script>
         function toggleAccordion(headerElement) {
             const card = headerElement.parentElement;
             card.classList.toggle('active');
+        }
+
+        // Basic toggle logic for representation
+        const toggleBtn = document.getElementById('themeToggle');
+        if(toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                const text = document.getElementById('themeText');
+                const icon = document.getElementById('themeIcon');
+                if(text.innerText === 'Light') {
+                    text.innerText = 'Dark';
+                    icon.innerText = '🌙';
+                } else {
+                    text.innerText = 'Light';
+                    icon.innerText = '☀️';
+                }
+            });
         }
     </script>
 
