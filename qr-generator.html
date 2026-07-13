@@ -5,107 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator - FixMyPDF</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
-        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+        :root { --bg-main: #0d0f14; --bg-card: #161920; --border-color: #232936; --text-main: #e2e8f0; --text-title: #ffffff; }
+        body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
+        .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
         #qrcode img { margin: 0 auto; border-radius: 8px; border: 4px solid white; }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <header class="my-4 flex items-center justify-between">
-        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
-            <i class="fas fa-arrow-left"></i> Home Dashboard
-        </a>
-        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
+        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
+        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
     </header>
 
-    <div class="mb-4 mt-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fas fa-qrcode text-yellow-400"></i> QR Code Generator
-        </h2>
-        <p class="text-xs text-gray-400 mt-0.5">Kisi bhi website link, text, ya UPI ID ka instant aur permanent QR code generate karein.</p>
+    <div class="mb-4">
+        <h2 class="text-lg font-bold" style="color: var(--text-title);">QR Code Generator</h2>
+        <p class="text-xs text-gray-400">Website links ya text ka QR code banayein.</p>
     </div>
 
     <div class="custom-card rounded-2xl p-5 mb-4 space-y-3">
-        <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Enter URL or Text:</label>
-            <input type="text" id="qrText" placeholder="https://example.com ya koi text likhein..." class="w-full bg-[#0d0f14] border border-gray-700 rounded-xl p-3 text-white font-semibold text-sm focus:border-yellow-500 focus:outline-none placeholder-gray-600">
-        </div>
-        
-        <button class="w-full bg-yellow-500 hover:bg-yellow-400 text-gray-900 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-yellow-950/20" id="generateBtn">
-            <i class="fas fa-cog"></i> Generate QR Code
-        </button>
+        <input type="text" id="qrText" placeholder="Enter URL or Text..." class="w-full bg-transparent border border-gray-700 rounded-xl p-3 text-sm outline-none focus:border-yellow-500">
+        <button id="generateBtn" class="w-full bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-3 rounded-xl">Generate QR Code</button>
     </div>
 
     <div class="custom-card rounded-2xl p-6 text-center space-y-4 hidden" id="outputContainer">
-        <div id="qrcode" class="mx-auto inline-block p-2 bg-white rounded-xl shadow-inner"></div>
-        
-        <p class="text-[11px] text-gray-400">Aapka QR Code scan karne ke liye bilkul taiyar hai!</p>
-
-        <button class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg" id="downloadBtn">
-            <i class="fas fa-download"></i> Download QR (PNG)
-        </button>
+        <div id="qrcode" class="mx-auto inline-block p-2 bg-white rounded-xl"></div>
+        <button id="downloadBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl">Download PNG</button>
     </div>
-
-    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
-        ADVERTISEMENT SPACE
-    </div>
-
-    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
-        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> Safe Processing: All QR generation processes execute offline.</p>
-        <p>© 2026 FixMyPDF Core Studio</p>
-    </footer>
 
     <script>
-        const qrText = document.getElementById('qrText');
-        const generateBtn = document.getElementById('generateBtn');
-        const outputContainer = document.getElementById('outputContainer');
-        const qrcodeDiv = document.getElementById('qrcode');
-        const downloadBtn = document.getElementById('downloadBtn');
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
-        let qrEngine = null;
-
-        generateBtn.addEventListener('click', () => {
-            const textValue = qrText.value.trim();
-            if (!textValue) {
-                alert('Bhai, pehle kuch text ya link toh enter karo!');
-                return;
-            }
-
-            // Clear previous QR Code if any
+        const qrcodeDiv = document.getElementById("qrcode");
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const text = document.getElementById('qrText').value.trim();
+            if (!text) return alert('Kuch toh likho bhai!');
             qrcodeDiv.innerHTML = '';
-            outputContainer.classList.remove('hidden');
-
-            // Initialize and generate QR Code client-side
-            qrEngine = new QRCode(qrcodeDiv, {
-                text: textValue,
-                width: 180,
-                height: 180,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.H
-            });
-
-            // Smooth scroll adjustment for mobile devices
-            setTimeout(() => {
-                outputContainer.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            new QRCode(qrcodeDiv, { text: text, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.H });
+            document.getElementById('outputContainer').classList.remove('hidden');
         });
 
-        // Download logic for generated QR Canvas/Img
-        downloadBtn.addEventListener('click', () => {
-            const qrImg = qrcodeDiv.querySelector('img');
-            if (!qrImg) {
-                alert('Bhai, pehle QR Code generate hone do!');
-                return;
-            }
-
+        document.getElementById('downloadBtn').addEventListener('click', () => {
             const link = document.createElement('a');
-            link.href = qrImg.src;
-            link.download = `FixMyPDF_QR_${Date.now()}.png`;
+            link.href = qrcodeDiv.querySelector('img').src;
+            link.download = "FixMyPDF_QR.png";
             link.click();
         });
     </script>
