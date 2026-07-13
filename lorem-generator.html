@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
@@ -7,139 +7,77 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
-        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+        :root { --bg-main: #0d0f14; --bg-card: #161920; --border-color: #232936; --text-main: #e2e8f0; --text-title: #ffffff; }
+        body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
+        .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Header / Nav Section -->
-    <header class="my-4 flex items-center justify-between">
-        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
-            <i class="fas fa-arrow-left"></i> Home Dashboard
-        </a>
-        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
+        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
+        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
     </header>
 
-    <!-- Tool Title -->
-    <div class="mb-4 mt-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fas fa-font text-pink-400"></i> Lorem Ipsum Generator
-        </h2>
-        <p class="text-xs text-gray-400 mt-0.5">Web design aur layouts ko test karne ke liye instantly customized dummy placeholder text generate karein.</p>
+    <div class="mb-4">
+        <h2 class="text-lg font-bold" style="color: var(--text-title);">Lorem Ipsum Generator</h2>
+        <p class="text-xs text-gray-400">Dummy placeholder text generate karein.</p>
     </div>
 
-    <!-- CONFIGURATION CONTROLS CARD -->
     <div class="custom-card rounded-2xl p-5 mb-4 space-y-4">
         <div class="grid grid-cols-2 gap-3 text-xs">
             <div>
-                <label class="block text-gray-400 font-medium mb-1.5">Type Select:</label>
-                <select id="typeSelect" class="w-full bg-[#0d0f14] border border-gray-700 rounded-xl p-2.5 text-white font-semibold focus:border-pink-500 focus:outline-none cursor-pointer">
+                <label class="block text-gray-400 font-medium mb-1">Type:</label>
+                <select id="typeSelect" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold outline-none">
                     <option value="paragraphs">Paragraphs</option>
                     <option value="words">Words</option>
                 </select>
             </div>
             <div>
-                <label class="block text-gray-400 font-medium mb-1.5">Count Amount:</label>
-                <input type="number" id="countInput" min="1" max="50" value="3" class="w-full bg-[#0d0f14] border border-gray-700 rounded-xl p-2.5 text-white font-bold focus:border-pink-500 focus:outline-none">
+                <label class="block text-gray-400 font-medium mb-1">Count:</label>
+                <input type="number" id="countInput" value="3" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold outline-none">
             </div>
         </div>
-
-        <!-- GENERATE BUTTON -->
-        <button class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-lg shadow-pink-950/20" id="generateBtn">
-            <i class="fas fa-feather-alt"></i> Generate Placeholder Text
-        </button>
+        <button id="generateBtn" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-xl">Generate Text</button>
     </div>
 
-    <!-- OUTPUT DISPLAY AREA (HIDDEN UNTIL GENERATED) -->
-    <div class="custom-card rounded-2xl p-4 mb-4 space-y-3 hidden" id="outputContainer">
-        <div class="flex justify-between items-center border-b border-gray-800 pb-2 text-xs">
-            <span class="text-gray-400 font-semibold uppercase tracking-wider">Generated Output:</span>
-            <button id="copyBtn" class="text-pink-400 hover:text-pink-300 font-bold flex items-center gap-1 transition-colors">
-                <i class="far fa-copy"></i> Copy All
-            </button>
+    <div class="custom-card rounded-2xl p-4 mb-4 hidden" id="outputContainer">
+        <div class="flex justify-between items-center mb-2 border-b border-gray-800 pb-2 text-xs">
+            <span class="font-bold uppercase text-gray-500">Output:</span>
+            <button id="copyBtn" class="text-pink-400 font-bold"><i class="far fa-copy"></i> Copy</button>
         </div>
-        <div id="outputText" class="text-xs text-gray-300 font-medium leading-relaxed max-h-60 overflow-y-auto pr-1 space-y-3 whitespace-pre-line"></div>
+        <div id="outputText" class="text-xs text-gray-300 leading-relaxed"></div>
     </div>
 
-    <!-- IN-FEED ADVERTISEMENT SPACE -->
-    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
-        ADVERTISEMENT SPACE
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
-        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-bolt"></i> Local Compiles: Core engine functions instantly inside native browser memory.</p>
-        <p>© 2026 FixMyPDF Core Studio</p>
-    </footer>
-
-    <!-- CORE LOREM GENERATOR DICTIONARY LOGIC SCRIPT -->
     <script>
-        const typeSelect = document.getElementById('typeSelect');
-        const countInput = document.getElementById('countInput');
-        const generateBtn = document.getElementById('generateBtn');
-        const outputContainer = document.getElementById('outputContainer');
-        const outputText = document.getElementById('outputText');
-        const copyBtn = document.getElementById('copyBtn');
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
         const loremLibrary = [
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-            "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
-            "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos.",
-            "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+            "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
         ];
 
-        generateBtn.addEventListener('click', () => {
-            const type = typeSelect.value;
-            let count = parseInt(countInput.value) || 1;
-            if (count < 1) count = 1;
-            if (count > 100) count = 100; // Hard cap boundary control
-
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const type = document.getElementById('typeSelect').value;
+            const count = document.getElementById('countInput').value;
+            const output = document.getElementById('outputText');
             let result = "";
 
             if (type === "paragraphs") {
-                let paraArray = [];
-                for (let i = 0; i < count; i++) {
-                    // Pick random or sequential paragraphs from master library
-                    paraArray.push(loremLibrary[i % loremLibrary.length]);
-                }
-                result = paraArray.join("\n\n");
+                result = Array(parseInt(count)).fill(loremLibrary[0]).join("\n\n");
             } else {
-                // Words generation system mapping
-                let wordsPool = loremLibrary.join(" ").replace(/[.,]/g, "").split(" ");
-                let wordsArray = [];
-                for (let i = 0; i < count; i++) {
-                    wordsArray.push(wordsPool[i % wordsPool.length].toLowerCase());
-                }
-                result = wordsArray.join(" ") + ".";
-                // Capitalize first letter safely
-                result = result.charAt(0).toUpperCase() + result.slice(1);
+                result = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor".split(" ").slice(0, count).join(" ") + ".";
             }
-
-            outputText.innerText = result;
-            outputContainer.classList.remove('hidden');
-            
-            // Smooth view transition
-            setTimeout(() => {
-                outputContainer.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            output.innerText = result;
+            document.getElementById('outputContainer').classList.remove('hidden');
         });
 
-        // Copy process interaction
-        copyBtn.addEventListener('click', () => {
-            const textToCopy = outputText.innerText;
-            if (!textToCopy) return;
-
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalHTML = copyBtn.innerHTML;
-                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => {
-                    copyBtn.innerHTML = originalHTML;
-                }, 1500);
-            });
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('outputText').innerText);
+            alert("Copied!");
         });
     </script>
 </body>
