@@ -7,161 +7,111 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
-        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+        :root { --bg-main: #0d0f14; --bg-card: #161920; --border-color: #232936; --text-main: #e2e8f0; --text-title: #ffffff; }
+        body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
+        .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <header class="my-4 flex items-center justify-between">
-        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
-            <i class="fas fa-arrow-left"></i> Home Dashboard
-        </a>
-        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    <!-- Header -->
+    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
+        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
+        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
     </header>
 
-    <div class="mb-4 mt-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fas fa-expand-arrows-alt text-purple-400"></i> Image Resizer
-        </h2>
-        <p class="text-xs text-gray-400 mt-0.5">Apni photos ki Width aur Height ko pixels mein badlein. Perfect dimensions paane ke liye best tool.</p>
+    <div class="mb-4">
+        <h2 class="text-lg font-bold" style="color: var(--text-title);">Image Resizer</h2>
+        <p class="text-xs text-gray-400">Photos ki size pixels mein badlein.</p>
     </div>
 
+    <!-- Upload Box -->
     <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-purple-900/60 hover:border-purple-500 transition-all mb-4 group">
         <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
-        <div class="w-16 h-16 bg-purple-600/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+        <div class="w-16 h-16 bg-purple-600/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-arrows-alt text-3xl"></i>
         </div>
-        <h3 class="text-sm font-bold text-white mb-1" id="uploadBoxText">Choose Image File</h3>
-        <p class="text-[11px] text-gray-500">(Supports JPG, JPEG, PNG)</p>
+        <h3 class="text-sm font-bold" id="uploadBoxText" style="color: var(--text-title);">Choose Image File</h3>
     </div>
 
+    <!-- Controls -->
     <div class="mb-4 space-y-3 hidden" id="controlsContainer">
-        
         <div class="custom-card rounded-xl p-3 text-center text-xs">
             <p class="text-gray-400 font-medium">Original Dimensions:</p>
-            <p id="originalDims" class="text-sm font-bold text-white mt-0.5">0 x 0 px</p>
+            <p id="originalDims" class="text-sm font-bold" style="color: var(--text-title);">0 x 0 px</p>
         </div>
-
         <div class="custom-card rounded-xl p-4 space-y-3">
             <div class="grid grid-cols-2 gap-3 text-xs">
                 <div>
                     <label class="block text-gray-400 font-medium mb-1">Width (px):</label>
-                    <input type="number" id="widthInput" class="w-full bg-[#0d0f14] border border-gray-700 rounded-lg p-2 text-white font-bold text-sm focus:border-purple-500 focus:outline-none">
+                    <input type="number" id="widthInput" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold focus:border-purple-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-gray-400 font-medium mb-1">Height (px):</label>
-                    <input type="number" id="heightInput" class="w-full bg-[#0d0f14] border border-gray-700 rounded-lg p-2 text-white font-bold text-sm focus:border-purple-500 focus:outline-none">
+                    <input type="number" id="heightInput" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold focus:border-purple-500 outline-none">
                 </div>
             </div>
-
-            <label class="flex items-center gap-2 text-xs font-medium text-gray-300 cursor-pointer select-none">
-                <input type="checkbox" id="aspectRatioCheck" checked class="w-4 h-4 accent-purple-500 rounded bg-gray-800 border-gray-700">
-                <span>Lock Aspect Ratio (Ratio barabar rakhein)</span>
+            <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                <input type="checkbox" id="aspectRatioCheck" checked class="accent-purple-500">
+                <span>Lock Aspect Ratio</span>
             </label>
         </div>
     </div>
 
     <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-purple-500 flex items-center gap-2.5 hidden" id="statusBlock">
-        <span class="w-2 h-2 bg-purple-500 rounded-full animate-ping"></span>
-        <p class="text-xs font-semibold text-gray-300">Recalculating canvas matrix...</p>
+        <p class="text-xs font-semibold" id="statusText">Processing...</p>
     </div>
 
-    <button class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-purple-900/20 hidden" id="downloadBtn">
-        <i class="fas fa-download"></i> Resize & Download Image
+    <button class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl hidden" id="downloadBtn">
+        <i class="fas fa-download"></i> Resize & Download
     </button>
 
-    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
-        ADVERTISEMENT SPACE
-    </div>
-
-    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
-        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> 100% Secure Sandbox: All resizes are done locally.</p>
-        <p>© 2026 FixMyPDF Core Studio</p>
-    </footer>
-
     <script>
-        const imageInput = document.getElementById('imageInput');
-        const uploadBoxText = document.getElementById('uploadBoxText');
-        const controlsContainer = document.getElementById('controlsContainer');
-        const originalDims = document.getElementById('originalDims');
-        const widthInput = document.getElementById('widthInput');
-        const heightInput = document.getElementById('heightInput');
-        const aspectRatioCheck = document.getElementById('aspectRatioCheck');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const statusBlock = document.getElementById('statusBlock');
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
-        let sourceImage = null;
-        let originalRatio = 1;
-        let originalFileName = "resized_image";
-        let fileType = "image/jpeg";
+        const imageInput = document.getElementById('imageInput'), uploadBoxText = document.getElementById('uploadBoxText');
+        const controlsContainer = document.getElementById('controlsContainer'), originalDims = document.getElementById('originalDims');
+        const widthInput = document.getElementById('widthInput'), heightInput = document.getElementById('heightInput');
+        const downloadBtn = document.getElementById('downloadBtn'), statusBlock = document.getElementById('statusBlock');
+        let sourceImage = null, originalRatio = 1, fileType = "image/jpeg";
 
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-            fileType = file.type;
-
             uploadBoxText.innerText = file.name;
-
+            fileType = file.type;
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = (event) => {
                 sourceImage = new Image();
-                sourceImage.onload = function() {
+                sourceImage.onload = () => {
                     originalDims.innerText = `${sourceImage.width} x ${sourceImage.height} px`;
-                    widthInput.value = sourceImage.width;
-                    heightInput.value = sourceImage.height;
+                    widthInput.value = sourceImage.width; heightInput.value = sourceImage.height;
                     originalRatio = sourceImage.width / sourceImage.height;
-
-                    controlsContainer.classList.remove('hidden');
-                    downloadBtn.classList.remove('hidden');
+                    controlsContainer.classList.remove('hidden'); downloadBtn.classList.remove('hidden');
                 };
                 sourceImage.src = event.target.result;
             };
             reader.readAsDataURL(file);
         });
 
-        // Aspect Ratio Event Logic
-        widthInput.addEventListener('input', () => {
-            if (aspectRatioCheck.checked && sourceImage) {
-                heightInput.value = Math.round(widthInput.value / originalRatio);
-            }
-        });
-
-        heightInput.addEventListener('input', () => {
-            if (aspectRatioCheck.checked && sourceImage) {
-                widthInput.value = Math.round(heightInput.value * originalRatio);
-            }
-        });
+        widthInput.addEventListener('input', () => { if(document.getElementById('aspectRatioCheck').checked) heightInput.value = Math.round(widthInput.value / originalRatio); });
+        heightInput.addEventListener('input', () => { if(document.getElementById('aspectRatioCheck').checked) widthInput.value = Math.round(heightInput.value * originalRatio); });
 
         downloadBtn.addEventListener('click', () => {
-            if (!sourceImage) return;
-
             statusBlock.classList.remove('hidden');
-            downloadBtn.disabled = true;
-            downloadBtn.style.opacity = '0.5';
-
             setTimeout(() => {
                 const canvas = document.createElement('canvas');
-                canvas.width = parseInt(widthInput.value) || sourceImage.width;
-                canvas.height = parseInt(heightInput.value) || sourceImage.height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
-
-                const dataUrl = canvas.toDataURL(fileType);
+                canvas.width = widthInput.value; canvas.height = heightInput.value;
+                canvas.getContext('2d').drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
                 const link = document.createElement('a');
-                link.href = dataUrl;
-                
-                const ext = fileType === "image/png" ? "png" : "jpg";
-                link.download = `${originalFileName}_resized.${ext}`;
+                link.href = canvas.toDataURL(fileType);
+                link.download = `Resized_${uploadBoxText.innerText}`;
                 link.click();
-
                 statusBlock.classList.add('hidden');
-                downloadBtn.disabled = false;
-                downloadBtn.style.opacity = '1';
-            }, 400);
+                uploadBoxText.innerText = "Choose Image File";
+            }, 500);
         });
     </script>
 </body>
