@@ -18,14 +18,13 @@
 <body class="p-4 max-w-lg mx-auto">
 
     <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
-        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
+        <a href="index.html" class="text-xs font-bold text-blue-500"><i class="fas fa-arrow-left"></i> Home</a>
         <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
         <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
     </header>
 
     <div class="mb-4">
         <h2 class="text-lg font-bold" style="color: var(--text-title);">QR Code Generator</h2>
-        <p class="text-xs text-gray-400">Website links ya text ka QR code banayein.</p>
     </div>
 
     <div class="custom-card rounded-2xl p-5 mb-4 space-y-3">
@@ -40,21 +39,29 @@
 
     <script>
         document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
-
         const qrcodeDiv = document.getElementById("qrcode");
+
         document.getElementById('generateBtn').addEventListener('click', () => {
             const text = document.getElementById('qrText').value.trim();
-            if (!text) return alert('Kuch toh likho bhai!');
+            if (!text) return alert('Bhai, pehle text ya link enter karo!');
             qrcodeDiv.innerHTML = '';
-            new QRCode(qrcodeDiv, { text: text, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.H });
+            new QRCode(qrcodeDiv, { text: text, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.H });
             document.getElementById('outputContainer').classList.remove('hidden');
         });
 
-        document.getElementById('downloadBtn').addEventListener('click', () => {
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const img = qrcodeDiv.querySelector('img');
+            if (!img) return;
+            const response = await fetch(img.src);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href = qrcodeDiv.querySelector('img').src;
+            link.href = url;
             link.download = "FixMyPDF_QR.png";
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
         });
     </script>
 </body>
