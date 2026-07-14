@@ -7,165 +7,113 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #0d0f14; color: #e2e8f0; font-family: system-ui, -apple-system, sans-serif; }
-        .custom-card { background: linear-gradient(145deg, #161920, #1b1f2a); border: 1px solid #232936; }
+        :root { --bg-main: #0d0f14; --bg-card: #161920; --border-color: #232936; --text-main: #e2e8f0; --text-title: #ffffff; }
+        body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
+        .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <header class="my-4 flex items-center justify-between">
-        <a href="index.html" class="text-xs font-bold text-blue-500 hover:text-blue-400 flex items-center gap-1.5 transition-colors">
-            <i class="fas fa-arrow-left"></i> Home Dashboard
-        </a>
-        <h1 class="text-xl font-bold text-white tracking-wide">FixMy<span class="text-blue-500">PDF</span></h1>
+    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-500 hover:text-blue-400"><i class="fas fa-home text-xl"></i></a>
+        <h1 class="text-lg font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="text-gray-400 hover:text-teal-500"><i class="fas fa-adjust"></i></button>
     </header>
 
-    <div class="mb-4 mt-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fas fa-compress-alt text-teal-400"></i> Image Compressor
-        </h2>
-        <p class="text-xs text-gray-400 mt-0.5">Apni photos aur images ka file size instantly kam karein. Forms aur uploads ke liye best tool.</p>
+    <div class="mb-6 text-center">
+        <h2 class="text-lg font-bold" style="color: var(--text-title);">Image Compressor</h2>
+        <p class="text-xs text-gray-400">Reduce file size instantly.</p>
     </div>
 
-    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-teal-900/60 hover:border-teal-500 transition-all mb-4 group">
-        <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
-        <div class="w-16 h-16 bg-teal-600/10 text-teal-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-teal-500/30 hover:border-teal-500 transition-all mb-4">
+        <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"/>
+        <div class="w-16 h-16 bg-teal-600/10 text-teal-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-file-image text-3xl"></i>
         </div>
-        <h3 class="text-sm font-bold text-white mb-1" id="uploadBoxText">Choose Image File</h3>
-        <p class="text-[11px] text-gray-500">(Supports JPG, JPEG, PNG)</p>
+        <h3 class="text-sm font-bold" id="uploadBoxText">Choose Image File</h3>
     </div>
 
-    <div class="mb-4 space-y-3 hidden" id="controlsContainer">
-        
+    <div id="controlsContainer" class="hidden space-y-4">
         <div class="grid grid-cols-2 gap-2 text-xs">
             <div class="custom-card rounded-xl p-3">
-                <p class="text-gray-400 font-medium">Original Size:</p>
-                <p id="originalSize" class="text-sm font-bold text-white mt-0.5">0 KB</p>
+                <p class="text-gray-400">Original:</p>
+                <p id="originalSize" class="font-bold text-white">0 KB</p>
             </div>
             <div class="custom-card rounded-xl p-3">
-                <p class="text-teal-400 font-medium">Estimated New Size:</p>
-                <p id="compressedSize" class="text-sm font-bold text-green-400 mt-0.5">Calculating...</p>
+                <p class="text-teal-400">Estimated:</p>
+                <p id="compressedSize" class="font-bold text-green-400">0 KB</p>
             </div>
         </div>
 
         <div class="custom-card rounded-xl p-4">
-            <div class="flex justify-between items-center text-xs font-semibold mb-2">
-                <span class="text-gray-300">Compression Quality:</span>
-                <span id="qualityVal" class="text-teal-400 bg-teal-950/40 border border-teal-900 px-2 py-0.5 rounded">70%</span>
-            </div>
+            <label class="text-xs font-semibold block mb-2">Quality: <span id="qualityVal">70%</span></label>
             <input type="range" id="qualitySlider" min="10" max="100" value="70" class="w-full accent-teal-500 h-1.5 bg-gray-800 rounded-lg cursor-pointer">
-            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-                <span>High Compression (Small Size)</span>
-                <span>Best Quality</span>
-            </div>
         </div>
+
+        <button id="compressBtn" class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3.5 rounded-xl transition-all">
+            <i class="fas fa-compress-alt mr-2"></i> Compress Image
+        </button>
+        <button id="downloadBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-xl hidden transition-all">
+            <i class="fas fa-download mr-2"></i> Download
+        </button>
     </div>
-
-    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-teal-500 flex items-center gap-2.5 hidden" id="statusBlock">
-        <span class="w-2 h-2 bg-teal-500 rounded-full animate-ping"></span>
-        <p class="text-xs font-semibold text-gray-300">Resampling pixel buffers client-side...</p>
-    </div>
-
-    <button class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 mb-6 transition-colors shadow-lg shadow-teal-900/20 hidden" id="downloadBtn">
-        <i class="fas fa-download"></i> Compress & Download Image
-    </button>
-
-    <div class="w-full bg-[#161920] border border-dashed border-gray-700 text-center py-4 rounded-xl mb-4 text-xs text-gray-500 font-bold tracking-wider">
-        ADVERTISEMENT SPACE
-    </div>
-
-    <footer class="text-center py-4 border-t border-gray-900 text-[10px] text-gray-500">
-        <p class="text-green-500 font-semibold mb-1"><i class="fas fa-shield-alt"></i> 100% Client-Side Optimization: Zero server transfers.</p>
-        <p>© 2026 FixMyPDF Core Studio</p>
-    </footer>
 
     <script>
-        const imageInput = document.getElementById('imageInput');
-        const uploadBoxText = document.getElementById('uploadBoxText');
-        const controlsContainer = document.getElementById('controlsContainer');
-        const originalSize = document.getElementById('originalSize');
-        const compressedSize = document.getElementById('compressedSize');
-        const qualitySlider = document.getElementById('qualitySlider');
-        const qualityVal = document.getElementById('qualityVal');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const statusBlock = document.getElementById('statusBlock');
-
         let sourceImage = null;
         let fileType = "image/jpeg";
-        let originalFileName = "compressed_image";
+        let originalFileName = "optimized";
+
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-            fileType = file.type === "image/png" ? "image/jpeg" : file.type; // Force export to compression scalable format
-            originalSize.innerText = `${(file.size / 1024).toFixed(1)} KB`;
-            uploadBoxText.innerText = file.name;
+            originalFileName = file.name.split('.')[0];
+            fileType = file.type === "image/png" ? "image/jpeg" : file.type;
+            document.getElementById('originalSize').innerText = `${(file.size / 1024).toFixed(1)} KB`;
+            document.getElementById('uploadBoxText').innerText = file.name;
 
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = (ev) => {
                 sourceImage = new Image();
-                sourceImage.onload = function() {
-                    controlsContainer.classList.remove('hidden');
-                    downloadBtn.classList.remove('hidden');
+                sourceImage.onload = () => {
+                    document.getElementById('controlsContainer').classList.remove('hidden');
                     updateEstimatedSize();
                 };
-                sourceImage.src = event.target.result;
+                sourceImage.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         });
 
-        qualitySlider.addEventListener('input', (e) => {
-            qualityVal.innerText = `${e.target.value}%`;
-            updateEstimatedSize();
-        });
+        qualitySlider.addEventListener('input', updateEstimatedSize);
 
         function updateEstimatedSize() {
-            if (!sourceImage) return;
-            const quality = qualitySlider.value / 100;
             const canvas = document.createElement('canvas');
             canvas.width = sourceImage.width;
             canvas.height = sourceImage.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(sourceImage, 0, 0);
-            
-            canvas.toBlob((blob) => {
-                if (blob) {
-                    compressedSize.innerText = `${(blob.size / 1024).toFixed(1)} KB`;
-                }
-            }, fileType, quality);
+            canvas.getContext('2d').drawImage(sourceImage, 0, 0);
+            canvas.toBlob(blob => {
+                if (blob) document.getElementById('compressedSize').innerText = `${(blob.size / 1024).toFixed(1)} KB`;
+            }, fileType, qualitySlider.value / 100);
+            document.getElementById('qualityVal').innerText = `${qualitySlider.value}%`;
         }
 
-        downloadBtn.addEventListener('click', () => {
-            if (!sourceImage) return;
+        document.getElementById('compressBtn').addEventListener('click', () => {
+            document.getElementById('compressBtn').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.remove('hidden');
+        });
 
-            statusBlock.classList.remove('hidden');
-            downloadBtn.disabled = true;
-            downloadBtn.style.opacity = '0.5';
-
-            setTimeout(() => {
-                const quality = qualitySlider.value / 100;
-                const canvas = document.createElement('canvas');
-                canvas.width = sourceImage.width;
-                canvas.height = sourceImage.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(sourceImage, 0, 0);
-
-                const dataUrl = canvas.toDataURL(fileType, quality);
-                const link = document.createElement('a');
-                link.href = dataUrl;
-                
-                // Keep extension aligned
-                const ext = fileType === "image/png" ? "png" : "jpg";
-                link.download = `${originalFileName}_optimized.${ext}`;
-                link.click();
-
-                statusBlock.classList.add('hidden');
-                downloadBtn.disabled = false;
-                downloadBtn.style.opacity = '1';
-            }, 500);
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = sourceImage.width;
+            canvas.height = sourceImage.height;
+            canvas.getContext('2d').drawImage(sourceImage, 0, 0);
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL(fileType, qualitySlider.value / 100);
+            link.download = `${originalFileName}_optimized.jpg`;
+            link.click();
         });
     </script>
 </body>
