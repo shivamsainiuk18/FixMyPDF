@@ -11,20 +11,21 @@
         body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
         body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
         .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Header -->
-    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
-        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
-        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
-        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
+    <!-- Professional Glass Header -->
+    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-500 hover:text-blue-400"><i class="fas fa-home text-xl"></i></a>
+        <h1 class="text-lg font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="text-gray-400 hover:text-indigo-500"><i class="fas fa-adjust"></i></button>
     </header>
 
-    <div class="mb-4">
+    <div class="mb-6 text-center">
         <h2 class="text-lg font-bold" style="color: var(--text-title);">Word Counter</h2>
-        <p class="text-xs text-gray-400">Text ke words aur characters count karein.</p>
+        <p class="text-xs text-gray-400">Track your text metrics instantly.</p>
     </div>
 
     <!-- Stats Grid -->
@@ -37,10 +38,10 @@
 
     <!-- Input Area -->
     <div class="custom-card rounded-2xl p-4 mb-4">
-        <textarea id="textInput" rows="8" placeholder="Apna text yahan paste karein..." class="w-full bg-transparent outline-none text-sm resize-none"></textarea>
+        <textarea id="textInput" rows="8" placeholder="Paste your text here..." class="w-full bg-transparent outline-none text-sm resize-none"></textarea>
         <div class="flex gap-2 mt-3">
-            <button id="copyBtn" class="flex-1 bg-gray-800 text-white font-bold py-2 rounded-lg text-xs hover:bg-gray-700">Copy</button>
-            <button id="clearBtn" class="flex-1 bg-red-900/30 text-red-400 font-bold py-2 rounded-lg text-xs hover:bg-red-900/50">Clear</button>
+            <button id="copyBtn" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 rounded-lg text-xs transition-all">Copy</button>
+            <button id="clearBtn" class="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 font-bold py-2 rounded-lg text-xs transition-all">Clear</button>
         </div>
     </div>
 
@@ -57,8 +58,11 @@
         });
 
         document.getElementById('copyBtn').addEventListener('click', () => {
+            if(!textInput.value) return;
             navigator.clipboard.writeText(textInput.value);
-            alert("Copied!");
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = 'Copied!';
+            setTimeout(() => btn.innerText = 'Copy', 2000);
         });
 
         document.getElementById('clearBtn').addEventListener('click', () => {
