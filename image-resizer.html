@@ -11,62 +11,54 @@
         body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
         body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
         .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Header -->
-    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
-        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
-        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
-        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
+    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-500 hover:text-blue-400"><i class="fas fa-home text-xl"></i></a>
+        <h1 class="text-lg font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="text-gray-400 hover:text-purple-500"><i class="fas fa-adjust"></i></button>
     </header>
 
-    <div class="mb-4">
+    <div class="mb-6 text-center">
         <h2 class="text-lg font-bold" style="color: var(--text-title);">Image Resizer</h2>
-        <p class="text-xs text-gray-400">Photos ki size pixels mein badlein.</p>
+        <p class="text-xs text-gray-400">Change image dimensions in pixels.</p>
     </div>
 
-    <!-- Upload Box -->
-    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-purple-900/60 hover:border-purple-500 transition-all mb-4 group">
-        <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-purple-500/30 hover:border-purple-500 transition-all mb-4">
+        <input accept="image/jpeg, image/jpg, image/png" id="imageInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"/>
         <div class="w-16 h-16 bg-purple-600/10 text-purple-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-arrows-alt text-3xl"></i>
         </div>
-        <h3 class="text-sm font-bold" id="uploadBoxText" style="color: var(--text-title);">Choose Image File</h3>
+        <h3 class="text-sm font-bold" id="uploadBoxText">Choose Image File</h3>
     </div>
 
-    <!-- Controls -->
-    <div class="mb-4 space-y-3 hidden" id="controlsContainer">
+    <div class="mb-4 space-y-4 hidden" id="controlsContainer">
         <div class="custom-card rounded-xl p-3 text-center text-xs">
             <p class="text-gray-400 font-medium">Original Dimensions:</p>
-            <p id="originalDims" class="text-sm font-bold" style="color: var(--text-title);">0 x 0 px</p>
+            <p id="originalDims" class="text-sm font-bold mt-1">0 x 0 px</p>
         </div>
         <div class="custom-card rounded-xl p-4 space-y-3">
             <div class="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                    <label class="block text-gray-400 font-medium mb-1">Width (px):</label>
-                    <input type="number" id="widthInput" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold focus:border-purple-500 outline-none">
+                    <label class="block text-gray-400 mb-1">Width (px):</label>
+                    <input type="number" id="widthInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 outline-none focus:border-purple-500">
                 </div>
                 <div>
-                    <label class="block text-gray-400 font-medium mb-1">Height (px):</label>
-                    <input type="number" id="heightInput" class="w-full bg-transparent border border-gray-700 rounded-lg p-2 font-bold focus:border-purple-500 outline-none">
+                    <label class="block text-gray-400 mb-1">Height (px):</label>
+                    <input type="number" id="heightInput" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 outline-none focus:border-purple-500">
                 </div>
             </div>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-                <input type="checkbox" id="aspectRatioCheck" checked class="accent-purple-500">
-                <span>Lock Aspect Ratio</span>
+                <input type="checkbox" id="aspectRatioCheck" checked class="accent-purple-500"> Lock Aspect Ratio
             </label>
         </div>
+        <button id="downloadBtn" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl transition-all">
+            <i class="fas fa-download mr-2"></i> Resize & Download
+        </button>
     </div>
-
-    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-purple-500 flex items-center gap-2.5 hidden" id="statusBlock">
-        <p class="text-xs font-semibold" id="statusText">Processing...</p>
-    </div>
-
-    <button class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl hidden" id="downloadBtn">
-        <i class="fas fa-download"></i> Resize & Download
-    </button>
 
     <script>
         document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
@@ -74,13 +66,14 @@
         const imageInput = document.getElementById('imageInput'), uploadBoxText = document.getElementById('uploadBoxText');
         const controlsContainer = document.getElementById('controlsContainer'), originalDims = document.getElementById('originalDims');
         const widthInput = document.getElementById('widthInput'), heightInput = document.getElementById('heightInput');
-        const downloadBtn = document.getElementById('downloadBtn'), statusBlock = document.getElementById('statusBlock');
-        let sourceImage = null, originalRatio = 1, fileType = "image/jpeg";
+        const downloadBtn = document.getElementById('downloadBtn');
+        let sourceImage = null, originalRatio = 1, fileType = "image/jpeg", fileName = "";
 
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (!file) return;
             uploadBoxText.innerText = file.name;
+            fileName = file.name;
             fileType = file.type;
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -89,7 +82,7 @@
                     originalDims.innerText = `${sourceImage.width} x ${sourceImage.height} px`;
                     widthInput.value = sourceImage.width; heightInput.value = sourceImage.height;
                     originalRatio = sourceImage.width / sourceImage.height;
-                    controlsContainer.classList.remove('hidden'); downloadBtn.classList.remove('hidden');
+                    controlsContainer.classList.remove('hidden');
                 };
                 sourceImage.src = event.target.result;
             };
@@ -100,18 +93,13 @@
         heightInput.addEventListener('input', () => { if(document.getElementById('aspectRatioCheck').checked) widthInput.value = Math.round(heightInput.value * originalRatio); });
 
         downloadBtn.addEventListener('click', () => {
-            statusBlock.classList.remove('hidden');
-            setTimeout(() => {
-                const canvas = document.createElement('canvas');
-                canvas.width = widthInput.value; canvas.height = heightInput.value;
-                canvas.getContext('2d').drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL(fileType);
-                link.download = `Resized_${uploadBoxText.innerText}`;
-                link.click();
-                statusBlock.classList.add('hidden');
-                uploadBoxText.innerText = "Choose Image File";
-            }, 500);
+            const canvas = document.createElement('canvas');
+            canvas.width = widthInput.value; canvas.height = heightInput.value;
+            canvas.getContext('2d').drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL(fileType);
+            link.download = `Resized_${fileName}`;
+            link.click();
         });
     </script>
 </body>
