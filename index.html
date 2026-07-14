@@ -9,60 +9,49 @@
     <style>
         body { background-color: #0d0f14; color: #e2e8f0; font-family: sans-serif; }
         .custom-card { background: #161920; border: 1px solid #232936; }
-        .tool-box { background: #1a1e28; border: 1px solid #2d3446; transition: 0.3s; }
-        .tool-box:hover { border-color: #3b82f6; transform: translateY(-3px); }
-        .glass-header { background: #161920; border-bottom: 1px solid #232936; }
+        .tool-box { background: #1a1e28; border: 1px solid #2d3446; text-decoration: none; display: block; padding: 16px; border-radius: 12px; text-align: center; }
+        .tool-box:hover { border-color: #3b82f6; }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <header class="glass-header p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+    <header class="flex justify-between items-center mb-6 p-4 bg-[#161920] rounded-2xl border border-[#232936]">
         <div>
             <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">ShivNeh Labs</p>
             <h1 class="text-xl font-black text-white">FixMy<span class="text-blue-500">PDF</span></h1>
         </div>
-        <button id="themeToggle" class="bg-gray-800 text-white px-4 py-2 rounded-xl text-xs font-bold">Light</button>
+        <button id="themeToggle" class="bg-gray-800 text-white px-4 py-1.5 rounded-full text-xs font-bold">Mode</button>
     </header>
 
-    <a href="jpg-to-pdf.html" class="block custom-card rounded-2xl p-6 text-center border-2 border-dashed border-blue-600/50 mb-8">
-        <i class="fas fa-file-image text-3xl text-blue-500 mb-3"></i>
-        <h3 class="text-md font-bold">JPG to PDF Converter</h3>
-        <p class="text-[10px] text-gray-400 mt-1">Apni photos select karein aur PDF banayein.</p>
-    </a>
-
-    <h2 class="text-xs font-bold text-gray-400 uppercase mb-3 ml-1"><i class="fas fa-file-pdf mr-2"></i> PDF Tools</h2>
+    <h2 class="text-[10px] font-bold text-gray-500 uppercase mb-3 ml-1">PDF Tools</h2>
     <div class="grid grid-cols-2 gap-3 mb-6">
-        <a href="jpg-to-pdf.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-image text-blue-400 text-lg mb-2"></i><div class="text-[11px] font-bold">JPG to PDF</div></a>
-        <a href="png-to-pdf.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-file-contract text-green-400 text-lg mb-2"></i><div class="text-[11px] font-bold">PNG to PDF</div></a>
-        <a href="pdf-merger.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-object-group text-yellow-400 text-lg mb-2"></i><div class="text-[11px] font-bold">PDF Merger</div></a>
-        <a href="pdf-compressor.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-compress-arrows-alt text-red-400 text-lg mb-2"></i><div class="text-[11px] font-bold">PDF Compressor</div></a>
+        <a href="jpg-to-pdf.html" class="tool-box"><i class="fas fa-image text-blue-400 mb-2"></i><div class="text-[11px] font-bold">JPG to PDF</div></a>
+        <a href="png-to-pdf.html" class="tool-box"><i class="fas fa-file-contract text-green-400 mb-2"></i><div class="text-[11px] font-bold">PNG to PDF</div></a>
+        <a href="pdf-merger.html" class="tool-box"><i class="fas fa-object-group text-yellow-400 mb-2"></i><div class="text-[11px] font-bold">PDF Merger</div></a>
+        <a href="pdf-compressor.html" class="tool-box"><i class="fas fa-compress-arrows-alt text-red-400 mb-2"></i><div class="text-[11px] font-bold">PDF Compressor</div></a>
     </div>
 
-    <h2 class="text-xs font-bold text-gray-400 uppercase mb-3 ml-1"><i class="fas fa-image mr-2"></i> Image Tools</h2>
+    <h2 class="text-[10px] font-bold text-gray-500 uppercase mb-3 ml-1">Image Tools</h2>
     <div class="grid grid-cols-2 gap-3 mb-6">
-        <a href="image-compressor.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-compress text-purple-400 text-lg mb-2"></i><div class="text-[11px] font-bold">Img Compressor</div></a>
-        <a href="image-resizer.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-expand text-pink-400 text-lg mb-2"></i><div class="text-[11px] font-bold">Img Resizer</div></a>
-        <a href="webp-converter.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-sync text-cyan-400 text-lg mb-2"></i><div class="text-[11px] font-bold">Convert to WebP</div></a>
+        <a href="image-compressor.html" class="tool-box"><i class="fas fa-compress text-purple-400 mb-2"></i><div class="text-[11px] font-bold">Img Comp</div></a>
+        <a href="image-resizer.html" class="tool-box"><i class="fas fa-expand text-pink-400 mb-2"></i><div class="text-[11px] font-bold">Img Resizer</div></a>
+        <a href="webp-converter.html" class="tool-box"><i class="fas fa-sync text-cyan-400 mb-2"></i><div class="text-[11px] font-bold">WebP Conv</div></a>
     </div>
 
-    <h2 class="text-xs font-bold text-gray-400 uppercase mb-3 ml-1"><i class="fas fa-cog mr-2"></i> Utilities</h2>
+    <h2 class="text-[10px] font-bold text-gray-500 uppercase mb-3 ml-1">Utilities</h2>
     <div class="grid grid-cols-2 gap-3 mb-6">
-        <a href="qr-generator.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-qrcode text-yellow-500 text-lg mb-2"></i><div class="text-[11px] font-bold">QR Generator</div></a>
-        <a href="password-generator.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-key text-red-500 text-lg mb-2"></i><div class="text-[11px] font-bold">Password Gen</div></a>
+        <a href="qr-generator.html" class="tool-box"><i class="fas fa-qrcode text-yellow-500 mb-2"></i><div class="text-[11px] font-bold">QR Generator</div></a>
+        <a href="password-generator.html" class="tool-box"><i class="fas fa-key text-red-500 mb-2"></i><div class="text-[11px] font-bold">Password Gen</div></a>
     </div>
 
-    <h2 class="text-xs font-bold text-gray-400 uppercase mb-3 ml-1"><i class="fas fa-pen mr-2"></i> Text & SEO</h2>
+    <h2 class="text-[10px] font-bold text-gray-500 uppercase mb-3 ml-1">Text & SEO</h2>
     <div class="grid grid-cols-2 gap-3 mb-8">
-        <a href="word-counter.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-font text-indigo-400 text-lg mb-2"></i><div class="text-[11px] font-bold">Word Counter</div></a>
-        <a href="lorem-generator.html" class="tool-box p-4 rounded-xl text-center"><i class="fas fa-align-left text-orange-400 text-lg mb-2"></i><div class="text-[11px] font-bold">Lorem Generator</div></a>
+        <a href="word-counter.html" class="tool-box"><i class="fas fa-font text-indigo-400 mb-2"></i><div class="text-[11px] font-bold">Word Counter</div></a>
+        <a href="lorem-generator.html" class="tool-box"><i class="fas fa-align-left text-orange-400 mb-2"></i><div class="text-[11px] font-bold">Lorem Ipsum</div></a>
     </div>
 
     <script>
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            const btn = document.getElementById('themeToggle');
-            btn.innerText = document.body.classList.contains('light-mode') ? 'Dark' : 'Light';
-        });
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
     </script>
 </body>
 </html>
