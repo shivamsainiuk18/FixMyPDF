@@ -12,100 +12,84 @@
         body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
         body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
         .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Header -->
-    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
-        <div>
-            <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold">ShivNeh Labs</span>
-            <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
-        </div>
-        <button id="themeToggle" class="px-4 py-1.5 rounded-full border border-gray-700 text-xs font-semibold flex items-center gap-1.5 hover:border-blue-500">
-            <span id="themeIcon"></span> <span id="themeText">Light</span>
+    <!-- Professional Header with Home Button -->
+    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-500 hover:text-blue-400">
+            <i class="fas fa-home text-xl"></i>
+        </a>
+        <h1 class="text-lg font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="text-gray-400 hover:text-blue-500">
+            <i class="fas fa-adjust"></i>
         </button>
     </header>
 
     <!-- Main Tool Card -->
-    <div class="custom-card rounded-2xl p-6 text-center border border-dashed border-blue-900/60">
-        <h2 class="text-lg font-bold mb-2" style="color: var(--text-title);">JPG to PDF Converter</h2>
-        <p class="text-xs text-gray-400 mb-6">Apni photos select karein aur PDF banayein.</p>
+    <div class="custom-card rounded-2xl p-6 text-center">
+        <h2 class="text-lg font-bold mb-4" style="color: var(--text-title);">JPG to PDF Converter</h2>
         
-        <div class="relative cursor-pointer bg-blue-600/10 p-8 rounded-xl border border-blue-500/30 hover:border-blue-500 transition-all">
+        <div class="relative cursor-pointer bg-blue-600/10 p-8 rounded-xl border border-dashed border-blue-500/30 hover:border-blue-500 transition-all">
             <i class="fas fa-images text-3xl text-blue-500 mb-2"></i>
-            <p class="text-sm font-semibold" id="fileNameText">Click to Choose Images</p>
+            <p class="text-sm font-semibold" id="fileNameText">Choose Images</p>
             <input accept="image/jpeg, image/jpg" id="imageInput" multiple type="file" class="absolute inset-0 opacity-0 cursor-pointer"/>
         </div>
 
         <div class="preview-container grid grid-cols-4 gap-2 mt-4" id="previewGrid"></div>
         
-        <button id="downloadBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 mt-6 rounded-xl hidden">
+        <!-- Action Buttons -->
+        <button id="convertBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 mt-6 rounded-xl hidden transition-all">
             <i class="fas fa-bolt mr-2"></i> Convert to PDF
         </button>
-        <div id="statusMessage" class="mt-4 text-xs font-bold text-green-500 hidden">Generating PDF...</div>
+        <button id="downloadBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 mt-4 rounded-xl hidden transition-all">
+            <i class="fas fa-download mr-2"></i> Download PDF
+        </button>
+        
+        <div id="statusMessage" class="mt-4 text-xs font-bold text-blue-500 hidden">Processing...</div>
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-8 text-center text-[10px] text-gray-500">
-        <p>© 2026 ShivNeh Labs. All Rights Reserved.</p>
-    </footer>
-
     <script>
-        const imageInput = document.getElementById('imageInput');
-        const fileNameText = document.getElementById('fileNameText');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const previewGrid = document.getElementById('previewGrid');
-        const statusMessage = document.getElementById('statusMessage');
         let selectedFiles = [];
+        let pdfBytes = null;
 
-        // Theme Logic
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('themeText').innerText = isLight ? 'Dark' : 'Light';
-            document.getElementById('themeIcon').innerText = isLight ? '' : '';
-        });
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
 
-        // File Selection
         imageInput.addEventListener('change', (e) => {
             selectedFiles = Array.from(e.target.files);
             if (selectedFiles.length === 0) return;
-            fileNameText.innerText = `${selectedFiles.length} JPGs Selected`;
+            fileNameText.innerText = `${selectedFiles.length} Images Selected`;
+            document.getElementById('convertBtn').classList.remove('hidden');
             previewGrid.innerHTML = '';
-            downloadBtn.classList.remove('hidden');
             selectedFiles.forEach(file => {
                 const reader = new FileReader();
-                reader.onload = (event) => {
-                    previewGrid.innerHTML += `<div class="aspect-square rounded border border-gray-700 overflow-hidden"><img src="${event.target.result}" class="w-full h-full object-cover"></div>`;
-                }
+                reader.onload = (ev) => previewGrid.innerHTML += `<div class="aspect-square rounded overflow-hidden"><img src="${ev.target.result}" class="w-full h-full object-cover"></div>`;
                 reader.readAsDataURL(file);
             });
         });
 
-        // Convert Logic
-        downloadBtn.addEventListener('click', async () => {
+        document.getElementById('convertBtn').addEventListener('click', async () => {
             statusMessage.classList.remove('hidden');
-            downloadBtn.classList.add('hidden');
-            try {
-                const pdfDoc = await PDFLib.PDFDocument.create();
-                for (const file of selectedFiles) {
-                    const image = await pdfDoc.embedJpg(await file.arrayBuffer());
-                    const page = pdfDoc.addPage([image.width, image.height]);
-                    page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
-                }
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: "application/pdf" });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = "FixMyPDF_Converted.pdf";
-                link.click();
-                statusMessage.innerText = 'Success! Downloaded.';
-            } catch (error) {
-                alert('Error: ' + error.message);
-                statusMessage.classList.add('hidden');
-                downloadBtn.classList.remove('hidden');
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            for (const file of selectedFiles) {
+                const image = await pdfDoc.embedJpg(await file.arrayBuffer());
+                const page = pdfDoc.addPage([image.width, image.height]);
+                page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
             }
+            pdfBytes = await pdfDoc.save();
+            statusMessage.innerText = 'Conversion Complete!';
+            document.getElementById('convertBtn').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.remove('hidden');
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "FixMyPDF_Converted.pdf";
+            link.click();
         });
     </script>
 </body>
