@@ -12,93 +12,79 @@
         body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --border-color: #e5e7eb; --text-main: #374151; --text-title: #111827; }
         body { background-color: var(--bg-main); color: var(--text-main); font-family: system-ui, sans-serif; transition: 0.2s; }
         .custom-card { background: var(--bg-card); border: 1px solid var(--border-color); }
+        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Header -->
-    <header class="my-6 flex justify-between items-center custom-card p-4 rounded-2xl">
-        <a href="index.html" class="text-xs font-bold text-blue-500 flex items-center gap-1.5"><i class="fas fa-arrow-left"></i> Home</a>
-        <h1 class="text-xl font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
-        <button id="themeToggle" class="px-3 py-1 rounded-full border border-gray-700 text-[10px] font-bold">Theme</button>
+    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
+        <a href="index.html" class="text-blue-500 hover:text-blue-400"><i class="fas fa-home text-xl"></i></a>
+        <h1 class="text-lg font-bold" style="color: var(--text-title);">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="text-gray-400 hover:text-red-500"><i class="fas fa-adjust"></i></button>
     </header>
 
-    <div class="mb-4">
+    <div class="mb-4 text-center">
         <h2 class="text-lg font-bold" style="color: var(--text-title);">PDF Compressor</h2>
-        <p class="text-xs text-gray-400">Files ka size kam karein bina quality khoye.</p>
+        <p class="text-xs text-gray-400">Reduce file size without quality loss.</p>
     </div>
 
-    <!-- Upload Box -->
-    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-red-900/60 hover:border-red-500 transition-all mb-4 group">
-        <input accept="application/pdf" id="pdfInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"/>
+    <div class="relative custom-card rounded-2xl p-8 text-center border-2 border-dashed border-red-500/30 hover:border-red-500 transition-all mb-4">
+        <input accept="application/pdf" id="pdfInput" type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"/>
         <div class="w-16 h-16 bg-red-600/10 text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <i class="fas fa-file-archive text-3xl"></i>
         </div>
-        <h3 class="text-sm font-bold" id="uploadBoxText" style="color: var(--text-title);">Choose PDF File</h3>
+        <h3 class="text-sm font-bold" id="uploadBoxText">Choose PDF File</h3>
     </div>
 
-    <!-- Metrics & Status -->
-    <div class="mb-4 space-y-2 hidden" id="metricsContainer">
+    <div id="metricsContainer" class="mb-4 hidden">
         <div class="custom-card rounded-xl p-3 flex justify-between items-center text-xs">
-            <div>
-                <p class="text-gray-400 font-medium">Original Size:</p>
-                <p id="originalSizeText" class="text-sm font-bold" style="color: var(--text-title);">0.00 MB</p>
-            </div>
-            <span class="bg-red-900/40 text-red-400 px-2 py-1 rounded text-[10px] font-bold">~30-50% Less</span>
+            <p class="text-gray-400 font-medium">Original Size: <span id="originalSizeText" class="font-bold text-white">0.00 MB</span></p>
         </div>
     </div>
 
-    <div class="custom-card rounded-xl p-3 mb-4 border-l-4 border-l-red-500 flex items-center gap-2.5 hidden" id="statusMessageBlock">
-        <p class="text-xs font-semibold" id="statusMessageText">Optimizing...</p>
-    </div>
-
-    <button class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 rounded-xl hidden" id="compressBtn">
-        <i class="fas fa-compress-arrows-alt"></i> Compress & Download
+    <button id="compressBtn" class="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3.5 rounded-xl hidden transition-all">
+        <i class="fas fa-compress-arrows-alt mr-2"></i> Compress PDF
+    </button>
+    <button id="downloadBtn" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 rounded-xl hidden transition-all mt-3">
+        <i class="fas fa-download mr-2"></i> Download Compressed
     </button>
 
     <script>
-        // Theme Toggle Logic
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-        });
-
-        // Compression Logic
-        const pdfInput = document.getElementById('pdfInput');
-        const uploadBoxText = document.getElementById('uploadBoxText');
-        const metricsContainer = document.getElementById('metricsContainer');
-        const originalSizeText = document.getElementById('originalSizeText');
-        const statusMessageBlock = document.getElementById('statusMessageBlock');
-        const statusMessageText = document.getElementById('statusMessageText');
-        const compressBtn = document.getElementById('compressBtn');
         let selectedFile = null;
+        let compressedBytes = null;
+
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
+
+        const pdfInput = document.getElementById('pdfInput');
+        const compressBtn = document.getElementById('compressBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         pdfInput.addEventListener('change', (e) => {
             selectedFile = e.target.files[0];
             if (selectedFile) {
-                uploadBoxText.innerText = selectedFile.name;
-                originalSizeText.innerText = `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`;
-                metricsContainer.classList.remove('hidden');
+                document.getElementById('uploadBoxText').innerText = selectedFile.name;
+                document.getElementById('originalSizeText').innerText = `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`;
+                document.getElementById('metricsContainer').classList.remove('hidden');
                 compressBtn.classList.remove('hidden');
             }
         });
 
         compressBtn.addEventListener('click', async () => {
-            statusMessageBlock.classList.remove('hidden');
-            statusMessageText.innerText = 'Optimizing document structures...';
-            try {
-                const fileBytes = await selectedFile.arrayBuffer();
-                const pdfDoc = await PDFLib.PDFDocument.load(fileBytes);
-                const compressedPdfBytes = await pdfDoc.save({ useObjectStreams: true });
-                const blob = new Blob([compressedPdfBytes], { type: "application/pdf" });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Compressed_${selectedFile.name}`;
-                link.click();
-                statusMessageText.innerText = 'Success! Optimized and downloaded.';
-            } catch (error) {
-                alert('Failed: ' + error.message);
-                statusMessageBlock.classList.add('hidden');
-            }
+            compressBtn.innerText = 'Compressing...';
+            const fileBytes = await selectedFile.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.load(fileBytes);
+            // Optimization settings
+            compressedBytes = await pdfDoc.save({ useObjectStreams: true, addDefaultPage: false });
+            compressBtn.classList.add('hidden');
+            downloadBtn.classList.remove('hidden');
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const blob = new Blob([compressedBytes], { type: "application/pdf" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Compressed_${selectedFile.name}`;
+            link.click();
         });
     </script>
 </body>
