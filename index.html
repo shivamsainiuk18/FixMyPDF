@@ -9,66 +9,50 @@
     <style>
         :root { --bg-main: #0d0f14; --bg-card: #161920; --text-main: #e2e8f0; --text-title: #ffffff; }
         body.light-mode { --bg-main: #f3f4f6; --bg-card: #ffffff; --text-main: #374151; --text-title: #111827; }
-        
-        body { background-color: var(--bg-main); color: var(--text-main); transition: all 0.3s ease; }
-        .glass-header { background: rgba(22, 25, 32, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .light-mode .glass-header { background: rgba(255, 255, 255, 0.8); border-bottom: 1px solid #e5e7eb; }
+        body { background-color: var(--bg-main); color: var(--text-main); transition: 0.3s; }
         .custom-card { background: var(--bg-card); border: 1px solid #232936; }
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .active .accordion-content { max-height: 1000px; }
-        .active .accordion-icon { transform: rotate(180deg); }
+        .tool-btn { background: #1f2937; padding: 16px; border-radius: 12px; text-align: center; transition: 0.3s; border: 1px solid #374151; }
+        .tool-btn:hover { border-color: #3b82f6; transform: translateY(-2px); }
     </style>
 </head>
 <body class="p-4 max-w-lg mx-auto">
 
-    <!-- Professional Glassmorphism Header -->
-    <header class="glass-header sticky top-0 z-50 p-4 rounded-2xl mb-6 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold text-[var(--text-title)]">FixMy<span class="text-blue-500">PDF</span></h1>
-        </div>
-        <button id="themeToggle" class="bg-gray-800 text-white px-4 py-1.5 rounded-full text-xs font-bold hover:bg-blue-600 transition-all">
-            <i class="fas fa-adjust mr-1"></i> Mode
-        </button>
+    <header class="flex justify-between items-center mb-6">
+        <h1 class="text-xl font-bold text-[var(--text-title)]">FixMy<span class="text-blue-500">PDF</span></h1>
+        <button id="themeToggle" class="bg-gray-800 text-white px-4 py-1.5 rounded-full text-xs font-bold">Mode</button>
     </header>
 
-    <!-- Active Tool Status -->
-    <div class="custom-card rounded-xl p-3 mb-6 border-l-4 border-l-green-500 flex items-center gap-3">
-        <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span></span>
-        <p class="text-sm font-bold">ShivNeh Labs | Active Suite</p>
-    </div>
-
-    <!-- Main Entry Point -->
-    <a href="jpg-to-pdf.html" class="block custom-card rounded-2xl p-8 text-center border-2 border-dashed border-blue-500/30 hover:border-blue-500 transition-all mb-6 group">
-        <div class="w-16 h-16 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
-            <i class="fas fa-file-upload text-3xl"></i>
+    <a href="jpg-to-pdf.html" class="block custom-card rounded-2xl p-6 text-center border-2 border-dashed border-blue-500/30 mb-6">
+        <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <i class="fas fa-file-upload text-2xl"></i>
         </div>
-        <h3 class="text-lg font-bold text-[var(--text-title)]">Select Images to Convert</h3>
-        <p class="text-xs text-gray-400 mt-1">Fast, Secure & Private PDF conversion</p>
+        <h3 class="font-bold text-[var(--text-title)]">Select Images to Convert</h3>
     </a>
 
-    <!-- Tools Accordion -->
-    <div class="space-y-4 mb-8">
-        <!-- Add your tool sections here with the updated header logic -->
-        <!-- (Maine isme wahi accordion rakha hai jo aapka tha, bas styling clean kar di hai) -->
-        <div class="custom-card rounded-xl overflow-hidden active border border-blue-500/20">
-            <div onclick="toggleAccordion(this)" class="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-800/50">
-                <span class="font-bold text-sm text-[var(--text-title)]"><i class="fas fa-file-pdf mr-2 text-blue-400"></i> PDF Tools</span>
-                <i class="fas fa-chevron-down text-xs accordion-icon"></i>
-            </div>
-            <div class="accordion-content bg-gray-900/20">
-                <div class="p-4 grid grid-cols-2 gap-3">
-                    <a href="jpg-to-pdf.html" class="bg-gray-800 p-3 rounded-lg text-center text-xs font-semibold hover:bg-blue-600 transition-all">JPG to PDF</a>
-                    <a href="pdf-merger.html" class="bg-gray-800 p-3 rounded-lg text-center text-xs font-semibold hover:bg-blue-600 transition-all">PDF Merger</a>
-                </div>
-            </div>
-        </div>
+    <h2 class="text-xs font-bold text-gray-500 uppercase mb-3">PDF Tools</h2>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+        <a href="jpg-to-pdf.html" class="tool-btn"><i class="fas fa-file-image text-blue-400 mb-2"></i><div class="text-xs font-bold">JPG to PDF</div></a>
+        <a href="png-to-pdf.html" class="tool-btn"><i class="fas fa-file-contract text-green-400 mb-2"></i><div class="text-xs font-bold">PNG to PDF</div></a>
+        <a href="pdf-merger.html" class="tool-btn"><i class="fas fa-object-group text-yellow-400 mb-2"></i><div class="text-xs font-bold">PDF Merger</div></a>
+        <a href="pdf-compressor.html" class="tool-btn"><i class="fas fa-compress-arrows-alt text-red-400 mb-2"></i><div class="text-xs font-bold">PDF Compressor</div></a>
+    </div>
+
+    <h2 class="text-xs font-bold text-gray-500 uppercase mb-3">Image Tools</h2>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+        <a href="image-compressor.html" class="tool-btn"><i class="fas fa-compress text-purple-400 mb-2"></i><div class="text-xs font-bold">Img Compressor</div></a>
+        <a href="image-resizer.html" class="tool-btn"><i class="fas fa-expand text-pink-400 mb-2"></i><div class="text-xs font-bold">Img Resizer</div></a>
+        <a href="webp-converter.html" class="tool-btn"><i class="fas fa-sync text-cyan-400 mb-2"></i><div class="text-xs font-bold">Convert WebP</div></a>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mb-8">
+        <a href="qr-generator.html" class="tool-btn"><i class="fas fa-qrcode text-yellow-500 mb-2"></i><div class="text-xs font-bold">QR Generator</div></a>
+        <a href="password-generator.html" class="tool-btn"><i class="fas fa-key text-emerald-500 mb-2"></i><div class="text-xs font-bold">Pass Gen</div></a>
+        <a href="word-counter.html" class="tool-btn"><i class="fas fa-font text-indigo-400 mb-2"></i><div class="text-xs font-bold">Word Counter</div></a>
+        <a href="lorem-generator.html" class="tool-btn"><i class="fas fa-pen text-orange-400 mb-2"></i><div class="text-xs font-bold">Lorem Ipsum</div></a>
     </div>
 
     <script>
-        function toggleAccordion(el) { el.parentElement.classList.toggle('active'); }
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-        });
+        document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('light-mode'));
     </script>
 </body>
 </html>
